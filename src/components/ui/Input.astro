@@ -1,0 +1,47 @@
+---
+interface Props {
+  type?: 'text' | 'email' | 'tel' | 'textarea';
+  name: string;
+  label?: string;
+  placeholder?: string;
+  required?: boolean;
+  class?: string;
+  rows?: number;
+}
+
+const {
+  type = 'text',
+  name,
+  label,
+  placeholder = '',
+  required = false,
+  class: className = '',
+  rows = 4,
+} = Astro.props;
+
+const inputClass = 'w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-neutral-500 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition';
+const labelClass = 'text-sm text-neutral-400 mb-2 block';
+---
+
+<div class={className}>
+  {label && <label for={name} class={labelClass}>{label}</label>}
+  {type === 'textarea' ? (
+    <textarea
+      id={name}
+      name={name}
+      rows={rows}
+      placeholder={placeholder}
+      required={required}
+      class={inputClass}
+    ></textarea>
+  ) : (
+    <input
+      id={name}
+      type={type}
+      name={name}
+      placeholder={placeholder}
+      required={required}
+      class={inputClass}
+    />
+  )}
+</div>

@@ -1,0 +1,63 @@
+---
+import siteData from '../../utils/siteData';
+import { getLocalizedHref } from '../../utils/i18n';
+import type { Language } from '../../types';
+import Navigation from './Navigation.astro';
+import MobileMenu from './MobileMenu.astro';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = 'cs' } = Astro.props;
+---
+
+<header
+  id="main-header"
+  class="fixed top-0 left-0 right-0 z-40 transition-all duration-300"
+>
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <!-- Logo -->
+    <a
+      href={getLocalizedHref('/', lang)}
+      class="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+      aria-label={siteData.meta.name}
+    >
+      <img
+        src={siteData.meta.logo}
+        alt={siteData.meta.name}
+        class="h-8 w-auto"
+        width="32"
+        height="32"
+      />
+      <span class="text-white font-semibold text-lg leading-none">
+        {siteData.meta.name}
+      </span>
+    </a>
+
+    <!-- Desktop navigation -->
+    <Navigation lang={lang} />
+
+    <!-- Mobile hamburger + overlay -->
+    <MobileMenu lang={lang} />
+  </div>
+</header>
+
+<script is:inline>
+  (function () {
+    var header = document.getElementById('main-header');
+    if (!header) return;
+
+    function onScroll() {
+      if (window.scrollY > 50) {
+        header.classList.add('glass');
+      } else {
+        header.classList.remove('glass');
+      }
+    }
+
+    // Run once on load to handle page-refresh mid-scroll
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+</script>

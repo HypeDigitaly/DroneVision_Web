@@ -1,0 +1,603 @@
+{
+  "meta": {
+    "name": "Vzorová Firma",
+    "tagline": "Automatizujeme růst B2B firem",
+    "description": "Vzorová Firma s.r.o. pomáhá českým B2B firmám 3x zvýšit počet kvalifikovaných leadů a ušetřit 20+ hodin týdně díky chytré automatizaci a datově řízenému marketingu.",
+    "siteUrl": "https://vzorovafirma.cz",
+    "logo": "/images/logo.svg",
+    "ogImage": "/images/og-image.png",
+    "favicon": "/images/favicon.ico",
+    "lang": "cs",
+    "alternateLanguages": ["en"],
+    "gaId": "G-XXXXXXXXXX"
+  },
+
+  "company": {
+    "name": "Vzorová Firma s.r.o.",
+    "ico": "12345678",
+    "dic": "CZ12345678",
+    "address": "Václavské náměstí 1",
+    "city": "Praha",
+    "zipCode": "110 00",
+    "country": "Česká republika"
+  },
+
+  "contact": {
+    "email": "info@vzorovafirma.cz",
+    "phone": "+420 123 456 789",
+    "address": "Václavské náměstí 1, 110 00 Praha 1",
+    "calendarLink": "https://calendly.com/vzorovafirma/konzultace",
+    "formNotificationEmails": [
+      "info@vzorovafirma.cz",
+      "obchod@vzorovafirma.cz"
+    ]
+  },
+
+  "social": {
+    "linkedin": "https://linkedin.com/company/vzorovafirma",
+    "facebook": "https://facebook.com/vzorovafirma"
+  },
+
+  "hero": {
+    "headline_cs": "Přestaňte ztrácet leady. Začněte zavírat obchody.",
+    "headline_en": "Stop Losing Leads. Start Closing Deals.",
+    "subheadline_cs": "Pomáháme českým B2B firmám automatizovat akvizici klientů a 3× zvýšit konverzní poměr — bez náboru nových lidí.",
+    "subheadline_en": "We help Czech B2B companies automate client acquisition and triple their conversion rate — without hiring a single extra person.",
+    "ctaPrimary": {
+      "text_cs": "Získejte bezplatnou konzultaci",
+      "text_en": "Get Free Consultation",
+      "href": "/kontakt"
+    },
+    "ctaSecondary": {
+      "text_cs": "Prohlédnout služby",
+      "text_en": "View Our Services",
+      "href": "/sluzby"
+    },
+    "backgroundImage": "/images/hero-bg.webp"
+  },
+
+  "problem": {
+    "enabled": true,
+    "headline_cs": "Znáte to taky?",
+    "headline_en": "Sound Familiar?",
+    "items": [
+      {
+        "icon": "clock",
+        "title_cs": "Ztrácíte čas manuální prací",
+        "title_en": "Wasting Hours on Manual Tasks",
+        "description_cs": "Váš obchodní tým tráví hodiny přepisováním dat, posíláním followupů ručně a hledáním informací místo toho, aby prodával.",
+        "description_en": "Your sales team spends hours copying data, sending manual follow-ups, and hunting for information instead of actually selling."
+      },
+      {
+        "icon": "chart-down",
+        "title_cs": "Nízká konverze leadů",
+        "title_en": "Low Lead Conversion Rate",
+        "description_cs": "Z každých 10 leadů zavřete 1–2 obchody. Zbytek propadá sítem, protože nemáte systém na správné oslovení ve správný čas.",
+        "description_en": "Out of every 10 leads, you close 1–2 deals. The rest slip through because you lack a system for the right outreach at the right time."
+      },
+      {
+        "icon": "lightning",
+        "title_cs": "Marketing bez měřitelných výsledků",
+        "title_en": "Marketing Without Measurable Results",
+        "description_cs": "Investujete do reklamy a obsahu, ale nevíte přesně, co funguje. Rozhodnutí děláte podle pocitu, ne podle dat.",
+        "description_en": "You invest in ads and content but have no clear picture of what works. Decisions are based on gut feeling, not hard data."
+      },
+      {
+        "icon": "target",
+        "title_cs": "Zákazníci odcházejí ke konkurenci",
+        "title_en": "Customers Are Leaving for Competitors",
+        "description_cs": "Vaše nabídka je skvělá, ale zákazníci vás nenajdou — nebo odejdou ke konkurenci, která má lepší onboarding a komunikaci.",
+        "description_en": "Your offer is excellent, but customers can't find you — or they leave for competitors who have better onboarding and communication."
+      }
+    ]
+  },
+
+  "solution": {
+    "enabled": true,
+    "headline_cs": "Jeden systém. Čtyři problémy vyřešeny.",
+    "headline_en": "One System. Four Problems Solved.",
+    "description_cs": "Nasadíme vám na míru šitý growth systém, který automatizuje prodejní pipeline, generuje leady na autopilotu a dává vám jasný přehled o každé koruně investované do marketingu.",
+    "description_en": "We deploy a tailor-made growth system that automates your sales pipeline, generates leads on autopilot, and gives you clear visibility into every crown invested in marketing.",
+    "features": [
+      {
+        "title_cs": "Automatizace prodejního procesu",
+        "title_en": "Sales Process Automation",
+        "description_cs": "CRM integrace, automatické followupy a inteligentní lead scoring — váš tým se soustředí jen na zákazníky připravené koupit.",
+        "description_en": "CRM integration, automated follow-ups, and intelligent lead scoring — your team focuses only on buyers who are ready to close.",
+        "icon": "lightning"
+      },
+      {
+        "title_cs": "Datový marketing s ROI zárukou",
+        "title_en": "Data-Driven Marketing with ROI Guarantee",
+        "description_cs": "Každá kampaň je postavena na datech. Víte přesně, kolik vás stojí jeden klient a kolik na něm vyděláte.",
+        "description_en": "Every campaign is built on data. You know exactly what each client costs to acquire and how much revenue they generate.",
+        "icon": "chart-up"
+      },
+      {
+        "title_cs": "Konverzní funnel na míru",
+        "title_en": "Custom Conversion Funnel",
+        "description_cs": "Vytvoříme prodejní funnel, který provede potenciálního zákazníka od prvního kontaktu až po podpis smlouvy — automaticky.",
+        "description_en": "We build a sales funnel that guides a prospect from first contact to signed contract — automatically.",
+        "icon": "target"
+      },
+      {
+        "title_cs": "Retence a upsell systém",
+        "title_en": "Retention and Upsell System",
+        "description_cs": "Zákazníky nejen získáme, ale i udržíme. Automatizovaný onboarding a upsell sekvence zvyšují životní hodnotu zákazníka o 40–70 %.",
+        "description_en": "We don't just acquire customers — we keep them. Automated onboarding and upsell sequences increase customer lifetime value by 40–70%.",
+        "icon": "users"
+      }
+    ]
+  },
+
+  "services": {
+    "enabled": true,
+    "headline_cs": "Co pro vás uděláme",
+    "headline_en": "What We Do for You",
+    "items": [
+      {
+        "title_cs": "Growth Automatizace",
+        "title_en": "Growth Automation",
+        "description_cs": "Kompletní nastavení automatizačního stacku: CRM, e-mailové sekvence, lead scoring a reporting dashboard — vše propojeno a měřeno.",
+        "description_en": "Full automation stack setup: CRM, email sequences, lead scoring, and reporting dashboard — all connected and measured.",
+        "features": [
+          "Audit stávajících procesů",
+          "Implementace CRM (HubSpot / Pipedrive)",
+          "Automatické e-mailové sekvence",
+          "Lead scoring model",
+          "Reporting dashboard v reálném čase",
+          "90denní technická podpora"
+        ],
+        "price": "29 000",
+        "priceFrequency": "měsíčně",
+        "icon": "lightning"
+      },
+      {
+        "title_cs": "Datový marketing",
+        "title_en": "Data-Driven Marketing",
+        "description_cs": "PPC kampaně, SEO a obsahový marketing řízený daty. Každou korunu sledujeme od kliknutí až po podpis smlouvy.",
+        "description_en": "PPC campaigns, SEO, and content marketing driven by data. We track every crown from the first click to the signed contract.",
+        "features": [
+          "Google Ads a LinkedIn Ads správa",
+          "SEO audit a optimalizace",
+          "Contenový kalendář a produkce",
+          "A/B testování landingů",
+          "Měsíční ROI report",
+          "Garantované KPIs"
+        ],
+        "price": "19 000",
+        "priceFrequency": "měsíčně",
+        "icon": "chart-up"
+      },
+      {
+        "title_cs": "Konzultace a strategie",
+        "title_en": "Consulting and Strategy",
+        "description_cs": "Jednorázová nebo pravidelná strategická konzultace pro majitele a obchodní ředitele, kteří chtějí jasný plán růstu na 12 měsíců.",
+        "description_en": "One-off or ongoing strategic consulting for owners and sales directors who want a clear 12-month growth roadmap.",
+        "features": [
+          "Analýza trhu a konkurence",
+          "Definice ICP a buyer persony",
+          "12měsíční growth roadmap",
+          "Prioritizace iniciativ dle ROI",
+          "Workshop se senior konzultantem",
+          "Písemný výstup a action plán"
+        ],
+        "price": "15 000",
+        "priceFrequency": "den",
+        "icon": "target"
+      }
+    ]
+  },
+
+  "process": {
+    "enabled": true,
+    "headline_cs": "Jak spolupráce vypadá",
+    "headline_en": "How We Work Together",
+    "steps": [
+      {
+        "number": 1,
+        "title_cs": "Bezplatná konzultace",
+        "title_en": "Free Consultation",
+        "description_cs": "Zarezervujte si 45minutový hovor. Probereme vaši situaci, cíle a zjistíme, zda a jak vám dokážeme pomoci.",
+        "description_en": "Book a 45-minute call. We discuss your situation, goals, and determine whether and how we can help.",
+        "icon": "calendar"
+      },
+      {
+        "number": 2,
+        "title_cs": "Audit a diagnóza",
+        "title_en": "Audit and Diagnosis",
+        "description_cs": "Důkladně proanalizujeme váš stávající marketing, obchod a procesy. Identifikujeme největší brzdy růstu.",
+        "description_en": "We thoroughly analyze your existing marketing, sales, and processes. We identify the biggest growth blockers.",
+        "icon": "search"
+      },
+      {
+        "number": 3,
+        "title_cs": "Návrh řešení",
+        "title_en": "Solution Design",
+        "description_cs": "Navrhneme konkrétní systém a plán implementace s jasně definovanými KPIs, termíny a zodpovědnostmi.",
+        "description_en": "We design a concrete system and implementation plan with clearly defined KPIs, timelines, and ownership.",
+        "icon": "document"
+      },
+      {
+        "number": 4,
+        "title_cs": "Implementace",
+        "title_en": "Implementation",
+        "description_cs": "Náš tým spustí a nakonfiguruje celý systém. Vy pokračujete v práci — my vše nastavíme na pozadí.",
+        "description_en": "Our team launches and configures the entire system. You keep working — we handle everything in the background.",
+        "icon": "settings"
+      },
+      {
+        "number": 5,
+        "title_cs": "Optimalizace a škálování",
+        "title_en": "Optimization and Scaling",
+        "description_cs": "Po spuštění průběžně optimalizujeme, testujeme a škálujeme to, co funguje. Výsledky se každý měsíc zlepšují.",
+        "description_en": "After launch we continuously optimize, test, and scale what works. Results improve every single month.",
+        "icon": "chart-up"
+      }
+    ]
+  },
+
+  "stats": {
+    "enabled": true,
+    "items": [
+      {
+        "value": "150",
+        "suffix": "+",
+        "label_cs": "spokojených klientů",
+        "label_en": "satisfied clients"
+      },
+      {
+        "value": "98",
+        "suffix": "%",
+        "label_cs": "míra spokojenosti",
+        "label_en": "client satisfaction rate"
+      },
+      {
+        "value": "3",
+        "suffix": "×",
+        "label_cs": "průměrné zvýšení ROI",
+        "label_en": "average ROI increase"
+      },
+      {
+        "value": "24",
+        "suffix": "h",
+        "label_cs": "garantovaná odezva",
+        "label_en": "guaranteed response time"
+      }
+    ]
+  },
+
+  "testimonials": {
+    "enabled": true,
+    "headline_cs": "Co říkají naši klienti",
+    "headline_en": "What Our Clients Say",
+    "items": [
+      {
+        "quote_cs": "Za 4 měsíce spolupráce jsme zdvojnásobili počet kvalifikovaných schůzek obchodního týmu. Systém prostě funguje — i o víkendu, i o svátcích.",
+        "quote_en": "In 4 months of working together, we doubled the number of qualified meetings for our sales team. The system just works — weekends, holidays, doesn't matter.",
+        "author": "Tomáš Novák",
+        "company": "TN Solutions a.s.",
+        "role_cs": "Obchodní ředitel",
+        "role_en": "Sales Director",
+        "image": "/images/testimonials/tomas-novak.webp",
+        "rating": 5
+      },
+      {
+        "quote_cs": "Konečně víme, která kampaň přinesla který kontrakt. ROI marketingu se nám za půl roku zvýšil o 240 %. Doporučuji každé B2B firmě.",
+        "quote_en": "We finally know which campaign brought which contract. Our marketing ROI increased by 240% in six months. I recommend this to every B2B company.",
+        "author": "Petra Svobodová",
+        "company": "PS Logistics s.r.o.",
+        "role_cs": "Generální ředitelka",
+        "role_en": "CEO",
+        "image": "/images/testimonials/petra-svobodova.webp",
+        "rating": 5
+      },
+      {
+        "quote_cs": "Předtím jsme měli skvělý produkt a špatný marketing. Teď máme skvělý produkt a systém, který nás zásobuje novými zákazníky každý týden.",
+        "quote_en": "Before, we had a great product and terrible marketing. Now we have a great product and a system that supplies us with new customers every single week.",
+        "author": "Jan Procházka",
+        "company": "ProTech Consulting s.r.o.",
+        "role_cs": "Zakladatel a CEO",
+        "role_en": "Founder and CEO",
+        "image": "/images/testimonials/jan-prochazka.webp",
+        "rating": 5
+      }
+    ]
+  },
+
+  "pricing": {
+    "enabled": true,
+    "headline_cs": "Transparentní ceník bez překvapení",
+    "headline_en": "Transparent Pricing, No Surprises",
+    "tiers": [
+      {
+        "name_cs": "Starter",
+        "name_en": "Starter",
+        "price": "15 000",
+        "currency": "CZK",
+        "period_cs": "měsíčně",
+        "period_en": "per month",
+        "description_cs": "Pro firmy, které začínají s automatizací a chtějí první výsledky bez velkého rizika.",
+        "description_en": "For companies starting with automation who want first results without high risk.",
+        "features": [
+          {
+            "text_cs": "CRM audit a základní nastavení",
+            "text_en": "CRM audit and basic setup",
+            "included": true
+          },
+          {
+            "text_cs": "3 automatizované e-mailové sekvence",
+            "text_en": "3 automated email sequences",
+            "included": true
+          },
+          {
+            "text_cs": "Měsíční reporting",
+            "text_en": "Monthly reporting",
+            "included": true
+          },
+          {
+            "text_cs": "E-mailová podpora",
+            "text_en": "Email support",
+            "included": true
+          },
+          {
+            "text_cs": "PPC správa",
+            "text_en": "PPC management",
+            "included": false
+          },
+          {
+            "text_cs": "Dedikovaný account manager",
+            "text_en": "Dedicated account manager",
+            "included": false
+          }
+        ],
+        "cta": {
+          "text_cs": "Začít se Starterem",
+          "text_en": "Get Started with Starter",
+          "href": "/kontakt?plan=starter"
+        },
+        "highlighted": false
+      },
+      {
+        "name_cs": "Professional",
+        "name_en": "Professional",
+        "price": "29 000",
+        "currency": "CZK",
+        "period_cs": "měsíčně",
+        "period_en": "per month",
+        "description_cs": "Kompletní growth systém pro firmy s ambiciózními cíli a obchodním týmem 3–15 lidí.",
+        "description_en": "Complete growth system for ambitious companies with a sales team of 3–15 people.",
+        "features": [
+          {
+            "text_cs": "Vše ze Starteru",
+            "text_en": "Everything in Starter",
+            "included": true
+          },
+          {
+            "text_cs": "Neomezené automatizované sekvence",
+            "text_en": "Unlimited automated sequences",
+            "included": true
+          },
+          {
+            "text_cs": "PPC správa (Google + LinkedIn)",
+            "text_en": "PPC management (Google + LinkedIn)",
+            "included": true
+          },
+          {
+            "text_cs": "Lead scoring model",
+            "text_en": "Lead scoring model",
+            "included": true
+          },
+          {
+            "text_cs": "Dedikovaný account manager",
+            "text_en": "Dedicated account manager",
+            "included": true
+          },
+          {
+            "text_cs": "Týdenní strategické hovory",
+            "text_en": "Weekly strategy calls",
+            "included": true
+          }
+        ],
+        "cta": {
+          "text_cs": "Spustit Professional",
+          "text_en": "Launch Professional",
+          "href": "/kontakt?plan=professional"
+        },
+        "highlighted": true
+      },
+      {
+        "name_cs": "Enterprise",
+        "name_en": "Enterprise",
+        "price": "49 000",
+        "currency": "CZK",
+        "period_cs": "měsíčně",
+        "period_en": "per month",
+        "setupFee": "25 000",
+        "description_cs": "Na míru šitý program pro rychle rostoucí firmy s komplexními prodejními procesy.",
+        "description_en": "Fully customized program for fast-growing companies with complex sales processes.",
+        "features": [
+          {
+            "text_cs": "Vše z Professionalu",
+            "text_en": "Everything in Professional",
+            "included": true
+          },
+          {
+            "text_cs": "Vlastní integrace a API propojení",
+            "text_en": "Custom integrations and API connections",
+            "included": true
+          },
+          {
+            "text_cs": "Školení obchodního týmu",
+            "text_en": "Sales team training",
+            "included": true
+          },
+          {
+            "text_cs": "SLA garantovaná odezva do 4 hodin",
+            "text_en": "SLA guaranteed response within 4 hours",
+            "included": true
+          },
+          {
+            "text_cs": "Čtvrtletní strategický workshop",
+            "text_en": "Quarterly strategy workshop",
+            "included": true
+          },
+          {
+            "text_cs": "Garance výsledků nebo vrácení peněz",
+            "text_en": "Results guarantee or money back",
+            "included": true
+          }
+        ],
+        "cta": {
+          "text_cs": "Získat Enterprise nabídku",
+          "text_en": "Get Enterprise Quote",
+          "href": "/kontakt?plan=enterprise"
+        },
+        "highlighted": false
+      }
+    ]
+  },
+
+  "faq": {
+    "enabled": true,
+    "headline_cs": "Často kladené otázky",
+    "headline_en": "Frequently Asked Questions",
+    "items": [
+      {
+        "question_cs": "Jak rychle uvidím první výsledky?",
+        "question_en": "How quickly will I see the first results?",
+        "answer_cs": "Většina klientů zaznamenává první měřitelné výsledky (zvýšení počtu leadů, lepší open rate e-mailů) do 30–45 dnů od spuštění. Výrazné obchodní výsledky přicházejí typicky mezi 60. a 90. dnem, kdy systém začíná pracovat naplno.",
+        "answer_en": "Most clients see first measurable results (increased leads, improved email open rates) within 30–45 days of launch. Significant business results typically arrive between day 60 and 90, when the system reaches full capacity."
+      },
+      {
+        "question_cs": "Musím mít vlastní IT tým nebo technické znalosti?",
+        "question_en": "Do I need an in-house IT team or technical knowledge?",
+        "answer_cs": "Vůbec ne. Celou technickou implementaci zajišťujeme my. Potřebujeme pouze přístup k vašemu CRM, e-mailovému účtu a reklamním platformám — zbytek je na nás.",
+        "answer_en": "Not at all. We handle the entire technical implementation. We only need access to your CRM, email account, and ad platforms — everything else is on us."
+      },
+      {
+        "question_cs": "Co se stane, pokud nebudu s výsledky spokojen?",
+        "question_en": "What happens if I am not satisfied with the results?",
+        "answer_cs": "U Enterprise plánu garantujeme výsledky smluvně. U ostatních plánů spolupracujeme na základě měsíční smlouvy bez dlouhodobého závazku — kdykoliv můžete odejít bez sankcí.",
+        "answer_en": "With the Enterprise plan, results are contractually guaranteed. For other plans, we operate on a monthly contract with no long-term lock-in — you can leave anytime without penalties."
+      },
+      {
+        "question_cs": "Pro jaké firmy jsou vaše služby vhodné?",
+        "question_en": "What types of companies are your services suitable for?",
+        "answer_cs": "Specializujeme se na česká B2B SaaS, technologické a poradenské firmy s ročním obratem 5–200 milionů korun a obchodním týmem 2–30 lidí. Pokud prodáváte jiným firmám a chcete systematicky růst, pravděpodobně vám dokážeme pomoci.",
+        "answer_en": "We specialize in Czech B2B SaaS, technology, and consulting companies with annual revenue of 5–200 million CZK and a sales team of 2–30 people. If you sell to other businesses and want to grow systematically, we can most likely help you."
+      },
+      {
+        "question_cs": "Jak probíhá onboarding po podpisu smlouvy?",
+        "question_en": "How does onboarding work after signing the contract?",
+        "answer_cs": "Do 48 hodin od podpisu vám přiřadíme dedikovaného account managera, který vás provede celým onboardingem. První kickoff call proběhne do týdne, první systémy jdou do provozu do 3 týdnů.",
+        "answer_en": "Within 48 hours of signing, we assign you a dedicated account manager who guides you through the entire onboarding. The first kickoff call happens within a week, and the first systems go live within 3 weeks."
+      }
+    ]
+  },
+
+  "cta": {
+    "enabled": true,
+    "headline_cs": "Začněte růst ještě dnes",
+    "headline_en": "Start Growing Today",
+    "subheadline_cs": "Rezervujte si 45minutovou bezplatnou konzultaci a zjistěte, o kolik leadů přicházíte každý měsíc. Bez závazků, bez prodejního tlaku.",
+    "subheadline_en": "Book a free 45-minute consultation and find out how many leads you are losing every month. No commitment, no sales pressure.",
+    "buttonText_cs": "Rezervovat bezplatnou konzultaci",
+    "buttonText_en": "Book Free Consultation",
+    "buttonHref": "/kontakt"
+  },
+
+  "blog": {
+    "enabled": true,
+    "postsPerPage": 12,
+    "categories": ["Automatizace", "Marketing", "Případové studie"]
+  },
+
+  "leadMagnet": {
+    "enabled": true,
+    "title_cs": "Bezplatný audit: Kolik leadů ztrácíte každý měsíc?",
+    "title_en": "Free Audit: How Many Leads Are You Losing Every Month?",
+    "description_cs": "Stáhněte si náš 15stránkový checklist a zjistěte, kde ve vašem prodejním procesu unikají peníze. Použit více než 500 českými B2B firmami.",
+    "description_en": "Download our 15-page checklist and discover where money is leaking from your sales process. Used by over 500 Czech B2B companies.",
+    "pdfUrl": "/downloads/lead-magnet.pdf",
+    "formFields": [
+      {
+        "name": "name",
+        "type": "text",
+        "label_cs": "Jméno a příjmení",
+        "label_en": "Full Name",
+        "required": true
+      },
+      {
+        "name": "email",
+        "type": "email",
+        "label_cs": "Pracovní e-mail",
+        "label_en": "Work Email",
+        "required": true
+      }
+    ]
+  },
+
+  "admin": {
+    "notificationEmails": [
+      "info@vzorovafirma.cz",
+      "obchod@vzorovafirma.cz"
+    ],
+    "enabledModules": {
+      "leads": true,
+      "newsletter": true,
+      "blogComments": true
+    }
+  },
+
+  "footer": {
+    "copyright_cs": "© 2026 Vzorová Firma s.r.o. Všechna práva vyhrazena.",
+    "copyright_en": "© 2026 Vzorová Firma s.r.o. All rights reserved.",
+    "links": [
+      {
+        "label_cs": "Služby",
+        "label_en": "Services",
+        "href": "/sluzby"
+      },
+      {
+        "label_cs": "O nás",
+        "label_en": "About Us",
+        "href": "/o-nas"
+      },
+      {
+        "label_cs": "Blog",
+        "label_en": "Blog",
+        "href": "/blog"
+      },
+      {
+        "label_cs": "Kontakt",
+        "label_en": "Contact",
+        "href": "/kontakt"
+      }
+    ],
+    "legalPages": {
+      "privacyPolicy": true,
+      "termsOfService": true,
+      "cookiePolicy": true
+    }
+  },
+
+  "branding": {
+    "colors": {
+      "primary": "#00A39A",
+      "secondary": "#1A1A2E",
+      "accent": "#F97316",
+      "background": "#050505",
+      "text": "#FFFFFF",
+      "border": "rgba(255,255,255,0.05)"
+    },
+    "fonts": {
+      "heading": "Inter",
+      "body": "Inter"
+    },
+    "spacing": {
+      "unit": "1rem"
+    },
+    "borderRadius": "12px"
+  }
+}

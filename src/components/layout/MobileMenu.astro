@@ -1,0 +1,146 @@
+---
+import siteData from '../../utils/siteData';
+import { getLocalizedHref } from '../../utils/i18n';
+import type { Language } from '../../types';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = 'cs' } = Astro.props;
+
+const contactLabel = lang === 'cs' ? 'Kontakt' : 'Contact';
+const switchLabel = lang === 'cs' ? 'EN' : 'CS';
+---
+
+<!-- Hamburger trigger (mobile only) -->
+<button
+  id="mobile-menu-open"
+  class="md:hidden flex items-center justify-center w-10 h-10 text-neutral-400 hover:text-white transition-colors"
+  aria-label="Otevřít menu"
+  aria-expanded="false"
+  aria-controls="mobile-menu-overlay"
+>
+  <!-- Hamburger icon -->
+  <svg id="icon-hamburger" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <line x1="3" y1="6"  x2="21" y2="6"  />
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="18" x2="21" y2="18" />
+  </svg>
+  <!-- Close icon (hidden by default) -->
+  <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="hidden">
+    <line x1="18" y1="6"  x2="6"  y2="18" />
+    <line x1="6"  y1="6"  x2="18" y2="18" />
+  </svg>
+</button>
+
+<!-- Full-screen overlay -->
+<div
+  id="mobile-menu-overlay"
+  class="fixed inset-0 z-50 bg-background/95 backdrop-blur-lg flex flex-col items-center justify-center gap-8 hidden"
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Mobilní navigace"
+>
+  <!-- Close button inside overlay -->
+  <button
+    id="mobile-menu-close"
+    class="absolute top-5 right-6 flex items-center justify-center w-10 h-10 text-neutral-400 hover:text-white transition-colors"
+    aria-label="Zavřít menu"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <line x1="18" y1="6"  x2="6"  y2="18" />
+      <line x1="6"  y1="6"  x2="18" y2="18" />
+    </svg>
+  </button>
+
+  <!-- Nav links -->
+  <nav class="flex flex-col items-center gap-6" aria-label="Mobilní navigace">
+    {siteData.footer.links.map((link) => (
+      <a
+        href={getLocalizedHref(link.href, lang)}
+        class="mobile-menu-link text-2xl font-medium text-neutral-300 hover:text-white transition-colors"
+      >
+        {lang === 'cs' ? link.label_cs : link.label_en}
+      </a>
+    ))}
+  </nav>
+
+  <!-- CTA -->
+  <a
+    href={getLocalizedHref('/kontakt', lang)}
+    class="mobile-menu-link bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary-dark transition-colors text-base font-medium"
+  >
+    {contactLabel}
+  </a>
+
+  <!-- Language switcher -->
+  <button
+    id="mobile-lang-switch"
+    class="text-neutral-500 hover:text-white text-sm uppercase tracking-widest transition-colors"
+    aria-label={lang === 'cs' ? 'Switch to English' : 'Přepnout do češtiny'}
+  >
+    {switchLabel}
+  </button>
+</div>
+
+<script is:inline define:vars={{ currentLang: lang }}>
+  (function () {
+    var openBtn    = document.getElementById('mobile-menu-open');
+    var closeBtn   = document.getElementById('mobile-menu-close');
+    var overlay    = document.getElementById('mobile-menu-overlay');
+    var iconHamburger = document.getElementById('icon-hamburger');
+    var iconClose  = document.getElementById('icon-close');
+    var langBtn    = document.getElementById('mobile-lang-switch');
+
+    if (!openBtn || !closeBtn || !overlay) return;
+
+    function openMenu() {
+      overlay.classList.remove('hidden');
+      overlay.setAttribute('aria-hidden', 'false');
+      openBtn.setAttribute('aria-expanded', 'true');
+      if (iconHamburger) iconHamburger.classList.add('hidden');
+      if (iconClose) iconClose.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      overlay.classList.add('hidden');
+      overlay.setAttribute('aria-hidden', 'true');
+      openBtn.setAttribute('aria-expanded', 'false');
+      if (iconHamburger) iconHamburger.classList.remove('hidden');
+      if (iconClose) iconClose.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    openBtn.addEventListener('click', openMenu);
+    closeBtn.addEventListener('click', closeMenu);
+
+    // Close on any nav link click
+    overlay.querySelectorAll('.mobile-menu-link').forEach(function (link) {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
+        closeMenu();
+        openBtn.focus();
+      }
+    });
+
+    // Language switcher
+    if (langBtn) {
+      langBtn.addEventListener('click', function () {
+        var url = new URL(window.location.href);
+        if (currentLang === 'cs') {
+          url.searchParams.set('lang', 'en');
+        } else {
+          url.searchParams.delete('lang');
+        }
+        window.location.href = url.toString();
+      });
+    }
+  })();
+</script>

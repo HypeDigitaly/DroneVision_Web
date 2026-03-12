@@ -1,0 +1,120 @@
+/* global.css — Base resets, layout utilities, animations
+   Import order: tailwindcss → tokens → base styles               */
+
+@import "tailwindcss";
+@import "./tokens.css";
+
+/* --- Base ---------------------------------------------------------------- */
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+/* Offset anchor targets so fixed nav doesn't overlap */
+[id] {
+  scroll-margin-top: 5rem;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Layout utilities ---------------------------------------------------- */
+
+/* Mirrors: max-w-7xl mx-auto px-6 */
+.container-section {
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* --- Component base classes ---------------------------------------------- */
+
+/* Section number label — "01", "02" … */
+.section-number {
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-primary);
+}
+
+/* Dark card — bg-[#0A0A0A] border border-white/5 rounded-2xl */
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  transition: border-color 0.3s ease;
+}
+.card:hover {
+  border-color: var(--color-border-hover);
+}
+
+/* Gradient text — primary teal sweep */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass surface — used by nav / floating panels */
+.glass {
+  background-color: rgba(5, 5, 5, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* --- Scroll-triggered animations ----------------------------------------- */
+
+@keyframes animationIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Elements start hidden; JS adds .is-visible via IntersectionObserver */
+.animate-on-scroll {
+  opacity: 0;
+}
+.animate-on-scroll.is-visible {
+  animation: var(--animate-fade-in);
+}
+
+/* --- Scrollbar (dark, Webkit) -------------------------------------------- */
+
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-background); }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* --- Global interaction styles ------------------------------------------- */
+
+::selection {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}

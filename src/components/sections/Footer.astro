@@ -1,0 +1,118 @@
+---
+import siteData from '../../utils/siteData';
+import { t, getLocalizedHref } from '../../utils/i18n';
+import type { Language } from '../../types';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = 'cs' } = Astro.props;
+const footer = siteData.footer;
+const company = siteData.company;
+const contact = siteData.contact;
+const social = siteData.social;
+
+const copyright = t(footer, 'copyright', lang);
+
+const legalLinks: { label: string; href: string }[] = [];
+if (footer.legalPages.privacyPolicy) {
+  legalLinks.push({ label: lang === 'cs' ? 'Ochrana osobních údajů' : 'Privacy Policy', href: getLocalizedHref('/privacy-policy', lang) });
+}
+if (footer.legalPages.termsOfService) {
+  legalLinks.push({ label: lang === 'cs' ? 'Obchodní podmínky' : 'Terms of Service', href: getLocalizedHref('/terms-of-service', lang) });
+}
+if (footer.legalPages.cookiePolicy) {
+  legalLinks.push({ label: lang === 'cs' ? 'Cookies' : 'Cookie Policy', href: getLocalizedHref('/cookie-policy', lang) });
+}
+---
+
+<footer id="footer" class="bg-[#050505] border-t border-white/5 pt-16 pb-8">
+  <div class="container-section">
+
+    <!-- Top grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 pb-12 border-b border-white/5">
+
+      <!-- Company info -->
+      <div>
+        <p class="text-lg font-bold text-white mb-3">{company.name}</p>
+        <address class="not-italic text-sm text-neutral-400 space-y-1">
+          <p>{company.address}</p>
+          <p>{company.zipCode} {company.city}</p>
+          {company.ico && <p>IČO: {company.ico}</p>}
+          {company.dic && <p>DIČ: {company.dic}</p>}
+        </address>
+        <div class="mt-4 space-y-1 text-sm text-neutral-400">
+          <p><a href={`mailto:${contact.email}`} class="hover:text-white transition-colors">{contact.email}</a></p>
+          <p><a href={`tel:${contact.phone.replace(/\s/g, '')}`} class="hover:text-white transition-colors">{contact.phone}</a></p>
+        </div>
+      </div>
+
+      <!-- Nav links -->
+      <div>
+        <p class="text-sm font-semibold text-white uppercase tracking-wider mb-4">
+          {lang === 'cs' ? 'Navigace' : 'Navigation'}
+        </p>
+        <ul class="space-y-2">
+          {footer.links.map((link) => (
+            <li>
+              <a
+                href={getLocalizedHref(link.href, lang)}
+                class="text-sm text-neutral-400 hover:text-white transition-colors"
+              >
+                {t(link, 'label', lang)}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Social + Legal -->
+      <div>
+        {(social.linkedin || social.facebook || social.instagram) && (
+          <>
+            <p class="text-sm font-semibold text-white uppercase tracking-wider mb-4">
+              {lang === 'cs' ? 'Sledujte nás' : 'Follow Us'}
+            </p>
+            <div class="flex gap-3 mb-6">
+              {social.linkedin && (
+                <a href={social.linkedin} target="_blank" rel="noopener noreferrer"
+                   class="text-neutral-400 hover:text-white transition-colors text-sm">LinkedIn</a>
+              )}
+              {social.facebook && (
+                <a href={social.facebook} target="_blank" rel="noopener noreferrer"
+                   class="text-neutral-400 hover:text-white transition-colors text-sm">Facebook</a>
+              )}
+              {social.instagram && (
+                <a href={social.instagram} target="_blank" rel="noopener noreferrer"
+                   class="text-neutral-400 hover:text-white transition-colors text-sm">Instagram</a>
+              )}
+            </div>
+          </>
+        )}
+
+        {legalLinks.length > 0 && (
+          <>
+            <p class="text-sm font-semibold text-white uppercase tracking-wider mb-4">
+              {lang === 'cs' ? 'Právní informace' : 'Legal'}
+            </p>
+            <ul class="space-y-2">
+              {legalLinks.map((link) => (
+                <li>
+                  <a href={link.href} class="text-sm text-neutral-400 hover:text-white transition-colors">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+
+    </div>
+
+    <!-- Copyright -->
+    <p class="mt-8 text-sm text-neutral-500 text-center">{copyright}</p>
+
+  </div>
+</footer>

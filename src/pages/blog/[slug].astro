@@ -1,0 +1,8 @@
+---
+export const prerender = false;
+
+// No blog posts exist in the template.
+// The site-builder will add blog post files per client.
+// Until then, all slugs return 404.
+return new Response(null, { status: 404 });
+---

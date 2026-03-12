@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/sections/Footer.astro';
+import Container from '../components/ui/Container.astro';
+import siteData from '../utils/siteData';
+import type { Language } from '../types';
+
+export const prerender = false;
+
+if (!siteData.footer.legalPages.termsOfService) {
+  return Astro.redirect('/', 302);
+}
+
+const url = Astro.url;
+const langParam = url.searchParams.get('lang');
+
+if (langParam === 'cs') {
+  const cleanUrl = url.pathname + (url.search.replace(/[?&]lang=cs/, '').replace(/^&/, '?') || '');
+  return Astro.redirect(cleanUrl.replace(/\?$/, ''), 301);
+}
+
+const cookieLang = Astro.cookies.get('preferredLanguage')?.value;
+const lang: Language = langParam === 'en' ? 'en' : cookieLang === 'en' ? 'en' : 'cs';
+
+if (langParam) {
+  Astro.cookies.set('preferredLanguage', langParam, { path: '/', maxAge: 31536000, sameSite: 'lax' });
+}
+
+const { company, contact } = siteData;
+const isEn = lang === 'en';
+const title = isEn ? 'Terms of Service' : 'Obchodní podmínky';
+---
+
+<BaseLayout title={title} lang={lang}>
+  <Header lang={lang} />
+  <main class="pt-20">
+    <Container>
+      <article class="py-20 max-w-3xl mx-auto prose prose-invert prose-p:text-white/70 prose-headings:text-white prose-a:text-primary">
+        <h1>{title}</h1>
+
+        {isEn ? (
+          <>
+            <p>These Terms of Service govern the relationship between <strong>{company.name}</strong> (IČO {company.ico}, "{company.name}", "we") and clients who purchase our services.</p>
+            <h2>1. Services</h2>
+            <p>We provide digital marketing, automation, and consulting services as agreed in individual contracts or proposals. Scope, deliverables, and timelines are specified in each engagement document.</p>
+            <h2>2. Payment</h2>
+            <p>Invoices are issued monthly and are due within 14 days. Late payments incur statutory interest. All prices are exclusive of VAT unless stated otherwise.</p>
+            <h2>3. Intellectual property</h2>
+            <p>Work product produced specifically for the client becomes the client's property upon full payment. General frameworks, methodologies, and tools remain our property.</p>
+            <h2>4. Confidentiality</h2>
+            <p>Both parties agree to keep each other's confidential information private and not to disclose it to third parties without prior written consent.</p>
+            <h2>5. Limitation of liability</h2>
+            <p>Our liability is limited to fees paid in the three months preceding the claim. We are not liable for indirect or consequential damages.</p>
+            <h2>6. Termination</h2>
+            <p>Either party may terminate monthly agreements with 30 days' written notice. Fixed-term contracts may be terminated for material breach after a 14-day cure period.</p>
+            <h2>7. Governing law</h2>
+            <p>These terms are governed by the laws of the Czech Republic. Disputes shall be resolved before the competent courts of the Czech Republic.</p>
+            <h2>8. Contact</h2>
+            <p>{company.name}, {company.address}, {company.zipCode} {company.city} &middot; {contact.email}</p>
+          </>
+        ) : (
+          <>
+            <p>Tyto obchodní podmínky upravují vztah mezi <strong>{company.name}</strong> (IČO {company.ico}, „{company.name}", „my") a klienty, kteří si objednají naše služby.</p>
+            <h2>1. Rozsah služeb</h2>
+            <p>Poskytujeme služby v oblasti digitálního marketingu, automatizace a poradenství dle individuálních smluv nebo cenových nabídek. Rozsah, výstupy a termíny jsou specifikovány v každém zakázkovém dokumentu.</p>
+            <h2>2. Platební podmínky</h2>
+            <p>Faktury jsou vystavovány měsíčně a jsou splatné do 14 dnů. Za pozdní platbu účtujeme zákonný úrok z prodlení. Ceny jsou uváděny bez DPH, není-li uvedeno jinak.</p>
+            <h2>3. Duševní vlastnictví</h2>
+            <p>Dílo vytvořené na zakázku přechází do vlastnictví klienta po úplném zaplacení. Obecné metodiky, frameworky a nástroje zůstávají naším majetkem.</p>
+            <h2>4. Důvěrnost</h2>
+            <p>Obě strany se zavazují zachovávat mlčenlivost o důvěrných informacích druhé strany a neposkytovat je třetím stranám bez předchozího písemného souhlasu.</p>
+            <h2>5. Omezení odpovědnosti</h2>
+            <p>Naše odpovědnost je omezena na výši poplatků zaplacených za poslední tři měsíce před uplatněním nároku. Za nepřímé škody neneseme odpovědnost.</p>
+            <h2>6. Ukončení spolupráce</h2>
+            <p>Měsíční spolupráci lze ukončit s 30denní výpovědní lhůtou. Smlouvy na dobu určitou lze ukončit při podstatném porušení po 14denní lhůtě k nápravě.</p>
+            <h2>7. Rozhodné právo</h2>
+            <p>Tyto podmínky se řídí právem České republiky. Spory budou řešeny před příslušnými soudy České republiky.</p>
+            <h2>8. Kontakt</h2>
+            <p>{company.name}, {company.address}, {company.zipCode} {company.city} &middot; {contact.email}</p>
+          </>
+        )}
+      </article>
+    </Container>
+  </main>
+  <Footer lang={lang} />
+</BaseLayout>

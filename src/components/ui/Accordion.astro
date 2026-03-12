@@ -1,0 +1,78 @@
+---
+interface AccordionItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  items: AccordionItem[];
+  class?: string;
+}
+
+const {
+  items,
+  class: className = '',
+} = Astro.props;
+---
+
+<div class={className}>
+  {items.map((item, i) => (
+    <div class="border-b border-white/5" data-accordion-item>
+      <button
+        type="button"
+        class="w-full flex items-center justify-between py-4 text-left text-white font-medium focus:outline-none"
+        aria-expanded="false"
+        data-accordion-trigger
+      >
+        <span>{item.question}</span>
+        <svg
+          data-chevron
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-neutral-400 shrink-0 transition-transform duration-200"
+          aria-hidden="true"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      <div
+        data-accordion-panel
+        class="overflow-hidden"
+        style="max-height: 0; transition: max-height 0.3s ease;"
+      >
+        <p class="text-neutral-400 pb-4 leading-relaxed">{item.answer}</p>
+      </div>
+    </div>
+  ))}
+</div>
+
+<script>
+  document.querySelectorAll('[data-accordion-item]').forEach((item) => {
+    const trigger = item.querySelector<HTMLButtonElement>('[data-accordion-trigger]');
+    const panel = item.querySelector<HTMLElement>('[data-accordion-panel]');
+    const chevron = item.querySelector<SVGElement>('[data-chevron]');
+
+    if (!trigger || !panel || !chevron) return;
+
+    trigger.addEventListener('click', () => {
+      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+
+      if (isOpen) {
+        panel.style.maxHeight = '0';
+        trigger.setAttribute('aria-expanded', 'false');
+        chevron.style.transform = 'rotate(0deg)';
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        trigger.setAttribute('aria-expanded', 'true');
+        chevron.style.transform = 'rotate(180deg)';
+      }
+    });
+  });
+</script>

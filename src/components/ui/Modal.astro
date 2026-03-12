@@ -1,0 +1,75 @@
+---
+interface Props {
+  id: string;
+  class?: string;
+}
+
+const {
+  id,
+  class: className = '',
+} = Astro.props;
+---
+
+<div
+  id={id}
+  role="dialog"
+  aria-modal="true"
+  data-modal
+  class="fixed inset-0 z-50 flex items-center justify-center"
+  style="display: none;"
+>
+  <!-- Backdrop -->
+  <div
+    data-modal-backdrop
+    class="absolute inset-0 bg-black/80 backdrop-blur-sm"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Content -->
+  <div class={['relative card max-w-lg w-full mx-6 p-8', className].filter(Boolean).join(' ')}>
+    <button
+      type="button"
+      data-modal-close
+      class="absolute top-4 right-4 text-neutral-400 hover:text-white transition"
+      aria-label="Close modal"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <slot />
+  </div>
+</div>
+
+<script>
+  function initModal(modal: HTMLElement) {
+    const backdrop = modal.querySelector('[data-modal-backdrop]');
+    const closeBtn = modal.querySelector('[data-modal-close]');
+    const modalId = modal.id;
+
+    function open() {
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    // Trigger buttons anywhere in the document
+    document.querySelectorAll(`[data-modal-trigger="${modalId}"]`).forEach((trigger) => {
+      trigger.addEventListener('click', open);
+    });
+
+    backdrop?.addEventListener('click', close);
+    closeBtn?.addEventListener('click', close);
+
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && modal.style.display !== 'none') close();
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-modal]').forEach(initModal);
+</script>

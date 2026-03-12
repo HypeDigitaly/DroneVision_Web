@@ -1,0 +1,57 @@
+---
+import siteData from '../../utils/siteData';
+import { t } from '../../utils/i18n';
+import type { Language } from '../../types';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = 'cs' } = Astro.props;
+const section = siteData.solution;
+
+if (!section.enabled) return;
+
+const headline = t(section, 'headline', lang);
+const description = t(section, 'description', lang);
+---
+
+<section id="solution" class="py-24 bg-[#060606] border-t border-white/5">
+  <div class="container-section">
+
+    <div class="max-w-3xl mb-14 animate-on-scroll">
+      <span class="section-number">02</span>
+      <h2 class="mt-3 text-3xl md:text-4xl lg:text-5xl font-bold text-white">
+        {headline}
+      </h2>
+      <p class="mt-5 text-lg text-neutral-400 leading-relaxed">
+        {description}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {section.features.map((feature, i) => (
+        <div
+          class="card p-6 flex gap-5 animate-on-scroll"
+          style={`animation-delay: ${i * 0.1}s`}
+        >
+          {feature.icon && (
+            <div class="shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+              <Icon name={feature.icon} size={20} />
+            </div>
+          )}
+          <div>
+            <h3 class="text-lg font-semibold text-white mb-2">
+              {t(feature, 'title', lang)}
+            </h3>
+            <p class="text-neutral-400 text-sm leading-relaxed">
+              {t(feature, 'description', lang)}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
