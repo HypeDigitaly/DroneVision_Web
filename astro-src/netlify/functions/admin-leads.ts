@@ -226,6 +226,21 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
         if (typeof full.message === "string" && full.message.length > 200) {
           full.message = full.message.slice(0, 200) + "…";
         }
+        // Truncate aiAnalysis.content to prevent large AI text from bloating
+        // admin responses. The full content remains in Blob storage.
+        const ai = full.aiAnalysis;
+        if (
+          ai !== null &&
+          typeof ai === "object" &&
+          !Array.isArray(ai) &&
+          typeof (ai as Record<string, unknown>).content === "string"
+        ) {
+          const aiRecord = ai as Record<string, unknown>;
+          const content = aiRecord.content as string;
+          if (content.length > 500) {
+            full.aiAnalysis = { ...aiRecord, content: content.slice(0, 500) + "…" };
+          }
+        }
         return full;
       })
     );

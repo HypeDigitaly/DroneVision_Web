@@ -138,7 +138,7 @@ async function sendEmail(to: string, subject: string, html: string, text: string
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: process.env.FROM_EMAIL || "noreply@notifications.example.com",
+      from: process.env.FROM_EMAIL || "noreply@notifications.drone-vision.cz",
       to,
       subject,
       html,

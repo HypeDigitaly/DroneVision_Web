@@ -10,6 +10,8 @@ import {
   getUserResultEmail,
   getTeamNotificationEmail,
 } from "./utils/quiz-email-templates";
+import { generateAiAnalysis } from './utils/openrouter';
+import type { AiAnalysisResult } from './utils/ai-types';
 
 // =============================================================================
 // QUIZ LEAD HANDLER — Netlify Function
@@ -59,6 +61,7 @@ interface QuizLead {
   planExpansion: boolean;
   annualLossKc: number;
   pricingTier: { price: number | null; label: string };
+  aiAnalysis?: AiAnalysisResult;
   consent: ConsentPayload;
   submittedAt: string;
   updatedAt: string;
@@ -312,6 +315,10 @@ async function upsertLead(
       planExpansion: lead.planExpansion,
       annualLossKc: lead.annualLossKc,
       pricingTier: lead.pricingTier,
+      // Preserve successful AI analysis from previous submission
+      aiAnalysis: lead.aiAnalysis?.status === 'success'
+        ? lead.aiAnalysis
+        : (existing.aiAnalysis?.status === 'success' ? existing.aiAnalysis : lead.aiAnalysis),
       consent: lead.consent,
       updatedAt: lead.updatedAt,
       submitCount: existing.submitCount + 1,
@@ -353,11 +360,12 @@ async function upsertLead(
 // ---------------------------------------------------------------------------
 
 async function sendResendEmail(
-  to: string,
+  to: string | string[],
   subject: string,
   html: string,
   text: string
 ): Promise<void> {
+  const fromEmail = process.env.FROM_EMAIL || 'noreply@notifications.drone-vision.cz';
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -365,9 +373,9 @@ async function sendResendEmail(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: process.env.FROM_EMAIL,
-      to: [to],
-      reply_to: "info@drone-vision.cz",
+      from: fromEmail,
+      to: Array.isArray(to) ? to : [to],
+      reply_to: fromEmail,
       subject,
       html,
       text,
@@ -384,6 +392,9 @@ async function sendResendEmail(
 // ---------------------------------------------------------------------------
 
 const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
+  // Timeout budget (10s Netlify limit):
+  // AI call: 0-6s | Blob storage: ~0.5s | 2x Resend: ~1s | Overhead: ~0.5s
+
   // Build CORS headers — fail fast if SITE_URL is not configured
   const corsHeaders = buildCorsHeaders();
   if (!corsHeaders) {
@@ -399,6 +410,10 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
         message: "Konfigurace serveru je neúplná (SITE_URL).",
       }),
     };
+  }
+
+  if (!process.env.FROM_EMAIL) {
+    console.error('[quiz-lead] FROM_EMAIL environment variable is not set');
   }
 
   // Preflight
@@ -479,6 +494,15 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
   const annualLossKc = calculateAnnualLoss(fields.capacityKw, fields.panelYear);
   const pricingTier = getPricingTier(fields.capacityKw);
 
+  // Generate AI analysis — non-blocking: failure returns 'failed'/'skipped', never throws
+  const aiAnalysis = await generateAiAnalysis({
+    capacityKw: fields.capacityKw,
+    panelYear: fields.panelYear,
+    planExpansion: fields.planExpansion,
+    annualLossKc,
+    pricingTier,
+  });
+
   // Build record
   const now = new Date().toISOString();
   const id = `quiz-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
@@ -493,6 +517,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     planExpansion: fields.planExpansion,
     annualLossKc,
     pricingTier,
+    aiAnalysis,
     consent: fields.consent,
     submittedAt: now,
     updatedAt: now,
@@ -520,6 +545,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     panelYear: fields.panelYear,
     annualLossKc,
     pricingTier,
+    aiAnalysis,
   });
 
   try {
@@ -554,11 +580,17 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     pricingTier,
     submittedAt: now,
     isUpdate,
+    aiAnalysis,
   });
+
+  const teamEmails = (process.env.QUIZ_NOTIFICATION_EMAILS || 'mira@dronesoft.cz,david@dronesoft.cz,pavelcermak@hypedigitaly.ai')
+    .split(',')
+    .map(e => e.trim())
+    .filter(e => e.length > 0);
 
   try {
     await sendResendEmail(
-      "info@drone-vision.cz",
+      teamEmails,
       teamTemplate.subject,
       teamTemplate.html,
       teamTemplate.text
@@ -572,14 +604,26 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
   if (isUpdate) {
     return response(
       200,
-      { status: "updated", message: "Výsledky byly aktualizovány." },
+      {
+        status: "updated",
+        message: "Výsledky byly aktualizovány.",
+        annualLossKc,
+        pricingTier,
+        aiAnalysis: aiAnalysis?.status === 'success' ? { content: aiAnalysis.content } : null,
+      },
       corsHeaders
     );
   }
 
   return response(
     202,
-    { status: "created", message: "Výsledky byly odeslány na váš e-mail." },
+    {
+      status: "created",
+      message: "Výsledky byly odeslány na váš e-mail.",
+      annualLossKc,
+      pricingTier,
+      aiAnalysis: aiAnalysis?.status === 'success' ? { content: aiAnalysis.content } : null,
+    },
     corsHeaders
   );
 };

@@ -1,2 +1,7 @@
 # Local Netlify folder
 .netlify
+
+# Environment variables — defense-in-depth (root .gitignore also excludes these)
+.env
+.env.*
+!.env.example

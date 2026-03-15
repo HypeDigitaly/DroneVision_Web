@@ -11,6 +11,8 @@
 // Branding: dark background (#0a0a0a), magenta accent (#D40074).
 // =============================================================================
 
+import type { AiAnalysisResult } from './ai-types';
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -100,6 +102,7 @@ export interface UserResultEmailData {
   panelYear: string;
   annualLossKc: number;
   pricingTier: PricingTier;
+  aiAnalysis?: AiAnalysisResult;
 }
 
 export interface EmailResult {
@@ -110,7 +113,7 @@ export interface EmailResult {
 
 /** Builds the result email sent to the quiz participant. */
 export function getUserResultEmail(data: UserResultEmailData): EmailResult {
-  const { name, capacityKw, panelYear, annualLossKc, pricingTier } = data;
+  const { name, capacityKw, panelYear, annualLossKc, pricingTier, aiAnalysis } = data;
 
   const safeName = escapeHtml(name);
   const safeCapacity = escapeHtml(String(capacityKw));
@@ -124,6 +127,45 @@ export function getUserResultEmail(data: UserResultEmailData): EmailResult {
       : `Inspekce vaší FVE (${safeLabel}): <strong style="${S.highlight_value}">Individuální nacenění</strong>`;
 
   const subject = "Výsledky vaší kalkulace ztrát FVE \u2014 DroneVision";
+
+  // ---------------------------------------------------------------------------
+  // AI analysis block — injected only when status is 'success'
+  // ---------------------------------------------------------------------------
+  let aiHtmlBlock = "";
+  let aiTextBlock = "";
+
+  if (aiAnalysis?.status === "success") {
+    // Split the AI content on lines that contain ONLY "---" (section separator)
+    const rawSections = aiAnalysis.content.split(/\n---\n/);
+
+    const sectionHtmlParts = rawSections.map((rawSection) => {
+      const lines = rawSection.split("\n");
+      const titleLine = escapeHtml(lines[0] ?? "");
+      const bodyLines = lines.slice(1).join("\n").trim();
+      const bodyText = escapeHtml(bodyLines).replace(/\n/g, '<br>\n');
+      return [
+        `<p style="${S.section_label}">${titleLine}</p>`,
+        `<p style="${S.p_body}">${bodyText}</p>`,
+      ].join("\n        ");
+    });
+
+    aiHtmlBlock = `
+        <!-- AI analysis -->
+        <div style="border-top:1px solid #2a2a2a;margin-top:20px;padding-top:4px">
+        ${sectionHtmlParts.join("\n        ")}
+        <p style="${S.footer_muted}">Analýza vygenerovaná AI na základě vašich údajů.</p>
+        </div>
+        <hr style="${S.divider}">`;
+
+    const rawSectionsText = aiAnalysis.content.split(/\n---\n/);
+    const sectionTextParts = rawSectionsText.map((s) => s.trim()).join("\n\n");
+    aiTextBlock = [
+      ``,
+      `--- AI Analýza ---`,
+      sectionTextParts,
+      `Analýza vygenerovaná AI na základě vašich údajů.`,
+    ].join("\n");
+  }
 
   const html = `<!DOCTYPE html>
 <html lang="cs">
@@ -164,7 +206,7 @@ export function getUserResultEmail(data: UserResultEmailData): EmailResult {
         <p style="${S.section_label}">Cena inspekce</p>
         <p style="${S.p_body}">${pricingLine}</p>
 
-        <hr style="${S.divider}">
+        <hr style="${S.divider}">${aiHtmlBlock}
 
         <!-- What's included -->
         <p style="${S.section_label}">Co je zahrnuto v ceně</p>
@@ -231,6 +273,7 @@ export function getUserResultEmail(data: UserResultEmailData): EmailResult {
       ? `Inspekce vaší FVE (${pricingTier.label}): ${formatCzk(pricingTier.price)} Kč`
       : `Inspekce vaší FVE (${pricingTier.label}): Individuální nacenění`,
     ``,
+    ...(aiTextBlock ? [aiTextBlock] : []),
     `--- Co je zahrnuto v ceně ---`,
     `+ Termokamerová inspekce dronem`,
     `+ Fotoplán celé elektrárny`,
@@ -263,6 +306,7 @@ export interface TeamNotificationEmailData {
   pricingTier: PricingTier;
   submittedAt: string;
   isUpdate: boolean;
+  aiAnalysis?: AiAnalysisResult;
 }
 
 /** Builds the internal lead-notification email sent to the DroneVision team. */
@@ -278,6 +322,7 @@ export function getTeamNotificationEmail(data: TeamNotificationEmailData): Email
     pricingTier,
     submittedAt,
     isUpdate,
+    aiAnalysis,
   } = data;
 
   const subjectSafeName = name.replace(/[\r\n]/g, "");
@@ -304,6 +349,18 @@ export function getTeamNotificationEmail(data: TeamNotificationEmailData): Email
           </tr>`;
   }
 
+  // Build the AI status row value based on aiAnalysis state
+  let aiStatusRowValue: string;
+  if (!aiAnalysis) {
+    aiStatusRowValue = "Neaktivní";
+  } else if (aiAnalysis.status === "success") {
+    aiStatusRowValue = `Vygenerováno (${escapeHtml(aiAnalysis.model)}, ${aiAnalysis.tokensUsed} tokenů)`;
+  } else if (aiAnalysis.status === "failed") {
+    aiStatusRowValue = `Selhalo (${escapeHtml(aiAnalysis.reason)})`;
+  } else {
+    aiStatusRowValue = `Přeskočeno (${escapeHtml(aiAnalysis.reason)})`;
+  }
+
   const rows = [
     row("Jméno", escapeHtml(name)),
     row(
@@ -322,7 +379,45 @@ export function getTeamNotificationEmail(data: TeamNotificationEmailData): Email
     row("Odhadovaná roční ztráta", `<strong style="color:#D40074">${formatCzk(annualLossKc)}&nbsp;Kč</strong>`),
     row("Cenová kategorie", pricingDisplay),
     row("Odesláno", escapeHtml(formattedDatetime)),
+    row("AI analýza", aiStatusRowValue),
   ].join("");
+
+  // AI content block shown below the data table when AI succeeded
+  let aiContentHtmlBlock = "";
+  let aiContentTextBlock = "";
+
+  if (aiAnalysis?.status === "success") {
+    const rawSections = aiAnalysis.content.split(/\n---\n/);
+
+    const sectionHtmlParts = rawSections.map((rawSection) => {
+      const lines = rawSection.split("\n");
+      const titleLine = escapeHtml(lines[0] ?? "");
+      const bodyLines = lines.slice(1).join("\n").trim();
+      const bodyText = escapeHtml(bodyLines).replace(/\n/g, '<br>\n');
+      return [
+        `<p style="${S.section_label}">${titleLine}</p>`,
+        `<p style="${S.p_body}">${bodyText}</p>`,
+      ].join("\n          ");
+    });
+
+    aiContentHtmlBlock = `
+      <!-- AI analysis content -->
+      <tr><td style="${S.body_cell}">
+        <div style="border-top:1px solid #2a2a2a;padding-top:4px">
+          ${sectionHtmlParts.join("\n          ")}
+          <p style="${S.footer_muted}">Analýza vygenerovaná AI na základě vašich údajů.</p>
+        </div>
+      </td></tr>`;
+
+    const rawSectionsText = aiAnalysis.content.split(/\n---\n/);
+    const sectionTextParts = rawSectionsText.map((s) => s.trim()).join("\n\n");
+    aiContentTextBlock = [
+      ``,
+      `--- AI Analýza ---`,
+      sectionTextParts,
+      `Analýza vygenerovaná AI na základě vašich údajů.`,
+    ].join("\n");
+  }
 
   const html = `<!DOCTYPE html>
 <html lang="cs">
@@ -348,7 +443,7 @@ export function getTeamNotificationEmail(data: TeamNotificationEmailData): Email
         <table width="100%" cellspacing="0" cellpadding="0" style="${S.table_cell}">
           ${rows}
         </table>
-      </td></tr>
+      </td></tr>${aiContentHtmlBlock}
 
       <!-- Quick-action buttons -->
       <tr><td style="padding:4px 36px 32px;text-align:center">
@@ -396,6 +491,16 @@ export function getTeamNotificationEmail(data: TeamNotificationEmailData): Email
     ``,
     `Odesláno:           ${formattedDatetime}`,
     `Typ záznamu:        ${isUpdate ? "Aktualizace" : "Nový lead"}`,
+    `AI analýza:         ${
+      !aiAnalysis
+        ? "Neaktivní"
+        : aiAnalysis.status === "success"
+          ? `Vygenerováno (${aiAnalysis.model}, ${aiAnalysis.tokensUsed} tokenů)`
+          : aiAnalysis.status === "failed"
+            ? `Selhalo (${aiAnalysis.reason})`
+            : `Přeskočeno (${aiAnalysis.reason})`
+    }`,
+    ...(aiContentTextBlock ? [aiContentTextBlock] : []),
   ].join("\n");
 
   return { subject, html, text };
