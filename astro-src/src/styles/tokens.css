@@ -1,0 +1,79 @@
+/* tokens.css — Brand design tokens (customized per client via site-builder)
+   Tailwind v4 @theme: vars are auto-available as utility classes.        */
+
+@theme {
+  /* --- Colors --- */
+  --color-primary:       #D40074;
+  --color-primary-light: #E8008A;
+  --color-primary-dark:  #9F0057;
+  --color-secondary:     #1A1A2E;
+  --color-accent:        #F97316;
+  --color-background:    #050505;
+  --color-surface:       #0A0A0A;
+  --color-text:          #FFFFFF;
+  --color-text-muted:    #A3A3A3;
+  --color-border:        rgba(255, 255, 255, 0.05);
+  --color-border-hover:  rgba(255, 255, 255, 0.10);
+
+  /* --- Typography --- */
+  --font-heading: 'Outfit', 'Inter', sans-serif;
+  --font-body:    'Inter', sans-serif;
+
+  /* --- Spacing --- */
+  --spacing-section:   6rem;
+  --spacing-container: 1.5rem;
+
+  /* --- Border radius --- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* --- Animations --- */
+  --animate-fade-in: animationIn 0.8s ease-out both;
+}
+
+/* Manual overrides — Tailwind v4 @theme doesn't reliably generate opacity
+   variants (e.g. bg-primary/10) at build time, so we spell them out.     */
+
+/* Text */
+.text-primary          { color: #D40074 !important; }
+.text-primary-light    { color: #E8008A !important; }
+.text-primary-muted    { color: rgba(212, 0, 116, 0.6) !important; }
+
+/* Background — solid */
+.bg-primary            { background-color: #D40074 !important; }
+.bg-primary-dark       { background-color: #9F0057 !important; }
+
+/* Background — opacity variants */
+.bg-primary\/5         { background-color: rgba(212, 0, 116, 0.05) !important; }
+.bg-primary\/10        { background-color: rgba(212, 0, 116, 0.10) !important; }
+.bg-primary\/20        { background-color: rgba(212, 0, 116, 0.20) !important; }
+
+/* Border */
+.border-primary        { border-color: #D40074 !important; }
+.border-primary\/20    { border-color: rgba(212, 0, 116, 0.20) !important; }
+.border-primary\/30    { border-color: rgba(212, 0, 116, 0.30) !important; }
+.border-primary\/50    { border-color: rgba(212, 0, 116, 0.50) !important; }
+
+/* Gradient from-stops */
+.from-primary\/10      { --tw-gradient-from: rgba(212, 0, 116, 0.10); }
+.from-primary\/20      { --tw-gradient-from: rgba(212, 0, 116, 0.20); }
+
+/* Hover variants */
+.hover\:text-primary:hover         { color: #D40074 !important; }
+.hover\:text-primary-light:hover   { color: #E8008A !important; }
+.hover\:bg-primary:hover           { background-color: #D40074 !important; }
+.hover\:bg-primary-light:hover     { background-color: #E8008A !important; }
+.hover\:bg-primary-dark:hover      { background-color: #9F0057 !important; }
+.hover\:bg-primary\/10:hover       { background-color: rgba(212, 0, 116, 0.10) !important; }
+.hover\:border-primary:hover       { border-color: #D40074 !important; }
+.hover\:border-primary\/30:hover   { border-color: rgba(212, 0, 116, 0.30) !important; }
+.hover\:border-primary\/50:hover   { border-color: rgba(212, 0, 116, 0.50) !important; }
+
+/* Ring variants */
+.ring-primary                      { --tw-ring-color: #D40074 !important; }
+.focus\:ring-primary:focus         { --tw-ring-color: #D40074 !important; }
+
+/* Group-hover variants */
+.group:hover .group-hover\:text-primary { color: #D40074 !important; }

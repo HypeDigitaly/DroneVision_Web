@@ -1,0 +1,9 @@
+# Local dev override — prevents the @astrojs/netlify adapter from reading
+# the root netlify.toml (which has base = "astro-src") and doubling the path.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"

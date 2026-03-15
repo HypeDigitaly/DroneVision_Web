@@ -1,24 +1,12 @@
 {
-  "name": "hype-client-template",
-  "type": "module",
+  "name": "dronevision-web",
   "private": true,
+  "description": "Root proxy — delegates all commands to astro-src/",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "check": "astro check"
-  },
-  "dependencies": {
-    "@astrojs/netlify": "^6.6.0",
-    "@netlify/blobs": "^8.1.0",
-    "@netlify/functions": "^3.0.0",
-    "@tailwindcss/typography": "^0.5.19",
-    "@tailwindcss/vite": "^4.1.0",
-    "astro": "^5.16.0",
-    "tailwindcss": "^4.1.0",
-    "typescript": "^5.7.0"
-  },
-  "devDependencies": {
-    "@astrojs/check": "^0.9.0"
+    "dev": "npm run dev --prefix astro-src",
+    "build": "npm run build --prefix astro-src",
+    "preview": "npm run preview --prefix astro-src",
+    "check": "npm run check --prefix astro-src",
+    "install:all": "cd astro-src && npm install"
   }
 }

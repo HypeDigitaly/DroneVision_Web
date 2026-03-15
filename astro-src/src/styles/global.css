@@ -1,0 +1,234 @@
+/* global.css — Base resets, layout utilities, animations
+   Import order: tailwindcss → tokens → base styles               */
+
+@import "tailwindcss";
+@import "./tokens.css";
+
+/* --- Base ---------------------------------------------------------------- */
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+/* Offset anchor targets so fixed nav doesn't overlap */
+[id] {
+  scroll-margin-top: 5rem;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Layout utilities ---------------------------------------------------- */
+
+/* Mirrors: max-w-7xl mx-auto px-6 */
+.container-section {
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* --- Component base classes ---------------------------------------------- */
+
+/* Heading typography — Outfit geometric sans */
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+}
+
+/* Section number label — "01", "02" … */
+.section-number {
+  font-family: 'Outfit', ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-number::before {
+  content: '';
+  display: inline-block;
+  width: 2rem;
+  height: 1px;
+  background: var(--color-primary);
+  opacity: 0.5;
+}
+
+/* Dark card — elevated surface with primary border highlight on hover */
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+}
+.card:hover {
+  border-color: rgba(212, 0, 116, 0.4);
+  box-shadow: 0 0 25px -5px rgba(212, 0, 116, 0.15), inset 0 1px 0 rgba(212, 0, 116, 0.1);
+  background-color: rgba(212, 0, 116, 0.03);
+}
+
+/* Gradient text — primary sweep */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass surface — used by nav / floating panels */
+.glass {
+  background-color: rgba(5, 5, 5, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Section divider glow — subtle primary gradient between sections */
+.section-glow {
+  position: relative;
+}
+.section-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 0, 116, 0.3), transparent);
+}
+
+/* --- Scroll-triggered animations ----------------------------------------- */
+
+/* Elements start hidden; JS adds .is-visible via IntersectionObserver */
+.animate-on-scroll {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes animationIn {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(212, 0, 116, 0.15); }
+    50% { box-shadow: 0 0 40px rgba(212, 0, 116, 0.3); }
+  }
+
+  @keyframes lineGrow {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+  }
+
+  @keyframes dotPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+  }
+
+  .animate-on-scroll.is-visible {
+    animation: var(--animate-fade-in);
+  }
+
+  .animate-slide-left.is-visible {
+    animation: slideInLeft 0.8s ease-out both;
+  }
+
+  .animate-slide-right.is-visible {
+    animation: slideInRight 0.8s ease-out both;
+  }
+
+  .animate-scale.is-visible {
+    animation: scaleIn 0.8s ease-out both;
+  }
+}
+
+/* --- Counter animation (Stats) ------------------------------------------- */
+
+.counter-value {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-heading);
+}
+
+/* --- Scrollbar (dark, Webkit) -------------------------------------------- */
+
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-background); }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* --- Global interaction styles ------------------------------------------- */
+
+::selection {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* --- Autofill override — prevent browser yellow/blue highlight ----------- */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #111111 inset !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  caret-color: #FFFFFF;
+  transition: background-color 5000s ease-in-out 0s;
+}

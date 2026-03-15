@@ -1,0 +1,1575 @@
+---
+import siteData from '../../data/site.json';
+
+interface Props {
+  lang?: 'cs' | 'en';
+}
+
+const { lang = 'cs' } = Astro.props;
+const isEn = lang === 'en';
+const q = siteData.quiz;
+
+// Pre-split GDPR label for privacy-policy link insertion
+const gdprFullText  = isEn ? q.step5_gdpr_en : q.step5_gdpr_cs;
+const gdprLinkWord  = isEn ? 'privacy policy' : 'ochrany soukromí';
+const gdprParts     = gdprFullText.split(gdprLinkWord);
+const gdprHasLink   = gdprParts.length === 2;
+
+const labels = {
+  // Step 1
+  step1Title:        isEn ? q.step1_title_en           : q.step1_title_cs,
+  step1Unit:         q.step1_unit,
+  step1ManualLabel:  isEn ? q.step1_manual_label_en    : q.step1_manual_label_cs,
+  // Step 2
+  step2Title:        isEn ? q.step2_title_en           : q.step2_title_cs,
+  step2Option1:      q.step2_option1,
+  step2Option1Label: isEn ? q.step2_option1_label_en   : q.step2_option1_label_cs,
+  step2Option2:      q.step2_option2,
+  step2Option2Label: isEn ? q.step2_option2_label_en   : q.step2_option2_label_cs,
+  step2Option3:      q.step2_option3,
+  step2Option3Label: isEn ? q.step2_option3_label_en   : q.step2_option3_label_cs,
+  // Step 3
+  step3Prefix:       isEn ? q.step3_prefix_en          : q.step3_prefix_cs,
+  step3Suffix:       q.step3_suffix,
+  step3Days:         isEn ? q.step3_days_en            : q.step3_days_cs,
+  step3Cta:          isEn ? q.step3_cta_en             : q.step3_cta_cs,
+  // Step 4
+  step4Title:        isEn ? q.step4_title_en           : q.step4_title_cs,
+  step4Yes:          isEn ? q.step4_yes_en             : q.step4_yes_cs,
+  step4No:           isEn ? q.step4_no_en              : q.step4_no_cs,
+  // Step 5
+  step5Title:        isEn ? q.step5_title_en           : q.step5_title_cs,
+  step5Name:         isEn ? q.step5_name_en            : q.step5_name_cs,
+  step5Email:        isEn ? q.step5_email_en           : q.step5_email_cs,
+  step5Phone:        isEn ? q.step5_phone_en           : q.step5_phone_cs,
+  step5Gdpr:         isEn ? q.step5_gdpr_en            : q.step5_gdpr_cs,
+  step5Submit:       isEn ? q.step5_submit_en          : q.step5_submit_cs,
+  step5Sending:      isEn ? q.step5_sending_en         : q.step5_sending_cs,
+  // Step 6
+  step6Title:        isEn ? q.step6_title_en           : q.step6_title_cs,
+  step6Subtitle:     isEn ? q.step6_subtitle_en        : q.step6_subtitle_cs,
+  step6Phone:        q.step6_phone,
+  // Navigation
+  continue:          isEn ? q.continue_en              : q.continue_cs,
+  back:              isEn ? q.back_en                  : q.back_cs,
+  // Errors
+  errorCapacity:     isEn ? q.error_capacity_en        : q.error_capacity_cs,
+  errorRequired:     isEn ? q.error_required_en        : q.error_required_cs,
+  errorEmail:        isEn ? q.error_email_en           : q.error_email_cs,
+  errorPhone:        isEn ? q.error_phone_en           : q.error_phone_cs,
+  errorSubmit:       isEn ? q.error_submit_en          : q.error_submit_cs,
+};
+---
+
+<!-- =========================================================
+     HeroQuiz — multi-step interactive loss calculator
+     Steps 1-4 active | Steps 5-6 placeholder divs
+     ========================================================= -->
+<div
+  id="hero-quiz"
+  class="hero-quiz-card"
+  role="region"
+  aria-label={isEn ? 'Solar plant loss calculator' : 'Kalkulátor ztrát solární elektrárny'}
+>
+
+  <!-- ── Step Indicator ─────────────────────────────────── -->
+  <div class="quiz-step-indicator" aria-hidden="true">
+    {[1,2,3,4,5,6].map(n => (
+      <span class="quiz-dot" data-dot={n}></span>
+    ))}
+  </div>
+
+  <!-- ── Back Button ────────────────────────────────────── -->
+  <button
+    id="quiz-back"
+    class="quiz-back-btn"
+    type="button"
+    aria-label={labels.back}
+  >
+    ← {labels.back}
+  </button>
+
+  <!-- ── Step 1: Capacity Input ─────────────────────────── -->
+  <div class="quiz-panel" data-step="1" role="group" aria-labelledby="quiz-s1-title">
+
+    <h2 id="quiz-s1-title" class="quiz-step-title">{labels.step1Title}</h2>
+
+    <!-- Large value display -->
+    <div class="quiz-capacity-display" aria-live="polite">
+      <span id="quiz-kw-display">10</span>
+      <span class="quiz-unit">&nbsp;{labels.step1Unit}</span>
+    </div>
+
+    <!-- Range slider -->
+    <div class="quiz-slider-wrap">
+      <input
+        id="quiz-slider"
+        type="range"
+        min="1"
+        max="500"
+        value="10"
+        step="1"
+        class="quiz-slider"
+        aria-label={`${labels.step1Title} — ${labels.step1Unit}`}
+        aria-valuemin="1"
+        aria-valuemax="500"
+        aria-valuenow="10"
+      />
+    </div>
+
+    <!-- Manual input -->
+    <label for="quiz-capacity-input" class="quiz-manual-label">
+      {labels.step1ManualLabel}
+    </label>
+    <input
+      id="quiz-capacity-input"
+      type="number"
+      min="1"
+      max="5000"
+      value="10"
+      class="quiz-manual-input"
+      aria-label={labels.step1ManualLabel}
+    />
+
+    <!-- Validation error -->
+    <p id="quiz-s1-error" class="quiz-error" role="alert" aria-live="assertive"></p>
+
+    <!-- CTA -->
+    <button id="quiz-s1-continue" type="button" class="quiz-cta-btn">
+      {labels.continue}
+    </button>
+
+  </div><!-- /step-1 -->
+
+  <!-- ── Step 2: Year Selection ──────────────────────────── -->
+  <div class="quiz-panel" data-step="2" aria-hidden="true" role="group" aria-labelledby="quiz-s2-title">
+
+    <h2 id="quiz-s2-title" class="quiz-step-title">{labels.step2Title}</h2>
+
+    <div class="quiz-year-grid">
+
+      <button
+        type="button"
+        class="quiz-option-btn"
+        data-year="2008-2014"
+        aria-pressed="false"
+      >
+        <span class="quiz-option-value">{labels.step2Option1}</span>
+        <span class="quiz-option-sub">{labels.step2Option1Label}</span>
+      </button>
+
+      <button
+        type="button"
+        class="quiz-option-btn"
+        data-year="2015-2019"
+        aria-pressed="false"
+      >
+        <span class="quiz-option-value">{labels.step2Option2}</span>
+        <span class="quiz-option-sub">{labels.step2Option2Label}</span>
+      </button>
+
+      <button
+        type="button"
+        class="quiz-option-btn"
+        data-year="2020+"
+        aria-pressed="false"
+      >
+        <span class="quiz-option-value">{labels.step2Option3}</span>
+        <span class="quiz-option-sub">{labels.step2Option3Label}</span>
+      </button>
+
+    </div>
+
+  </div><!-- /step-2 -->
+
+  <!-- ── Step 3: Result Reveal ───────────────────────────── -->
+  <div class="quiz-panel" data-step="3" aria-hidden="true" role="group" aria-labelledby="quiz-s3-title">
+
+    <p id="quiz-s3-title" class="quiz-result-prefix">{labels.step3Prefix}</p>
+
+    <div class="quiz-result-row" aria-live="polite" aria-atomic="true">
+      <span id="quiz-result-number" class="quiz-result-number">0</span>
+      <span class="quiz-result-suffix">&nbsp;{labels.step3Suffix}</span>
+    </div>
+
+    <p id="quiz-s3-days" class="quiz-result-days"></p>
+
+    <button
+      id="quiz-s3-cta"
+      type="button"
+      class="quiz-cta-btn quiz-cta-pulse quiz-cta-hidden"
+    >
+      {labels.step3Cta}
+    </button>
+
+  </div><!-- /step-3 -->
+
+  <!-- ── Step 4: Expansion Question ─────────────────────── -->
+  <div class="quiz-panel" data-step="4" aria-hidden="true" role="group" aria-labelledby="quiz-s4-title">
+
+    <h2 id="quiz-s4-title" class="quiz-step-title">{labels.step4Title}</h2>
+
+    <div class="quiz-yn-grid">
+
+      <button
+        type="button"
+        class="quiz-option-btn"
+        data-expansion="yes"
+        aria-pressed="false"
+      >
+        <span class="quiz-option-value">{labels.step4Yes}</span>
+      </button>
+
+      <button
+        type="button"
+        class="quiz-option-btn"
+        data-expansion="no"
+        aria-pressed="false"
+      >
+        <span class="quiz-option-value">{labels.step4No}</span>
+      </button>
+
+    </div>
+
+  </div><!-- /step-4 -->
+
+  <!-- ── Step 5: Contact Capture Form ─────────────────── -->
+  <div class="quiz-panel" data-step="5" aria-hidden="true" role="group" aria-labelledby="quiz-s5-title">
+
+    <p id="quiz-s5-title" class="quiz-result-prefix">{labels.step5Title}</p>
+
+    <!-- Honeypot (hidden from human users, visible to bots) -->
+    <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
+      <input type="text" id="quiz-honeypot" name="_honeypot" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="quiz-form-fields">
+
+      <!-- Name field -->
+      <div class="quiz-field-group">
+        <label for="quiz-name" class="quiz-field-label">{labels.step5Name}</label>
+        <input
+          id="quiz-name"
+          type="text"
+          name="name"
+          required
+          autocomplete="name"
+          class="quiz-field-input"
+          aria-required="true"
+          aria-describedby="quiz-name-error"
+        />
+        <p id="quiz-name-error" class="quiz-field-error" role="alert" aria-live="assertive"></p>
+      </div>
+
+      <!-- Email field -->
+      <div class="quiz-field-group">
+        <label for="quiz-email" class="quiz-field-label">{labels.step5Email}</label>
+        <input
+          id="quiz-email"
+          type="email"
+          name="email"
+          required
+          autocomplete="email"
+          class="quiz-field-input"
+          aria-required="true"
+          aria-describedby="quiz-email-error"
+        />
+        <p id="quiz-email-error" class="quiz-field-error" role="alert" aria-live="assertive"></p>
+      </div>
+
+      <!-- Phone field -->
+      <div class="quiz-field-group">
+        <label for="quiz-phone" class="quiz-field-label">{labels.step5Phone}</label>
+        <input
+          id="quiz-phone"
+          type="tel"
+          name="phone"
+          required
+          autocomplete="tel"
+          class="quiz-field-input"
+          aria-required="true"
+          aria-describedby="quiz-phone-error"
+        />
+        <p id="quiz-phone-error" class="quiz-field-error" role="alert" aria-live="assertive"></p>
+      </div>
+
+    </div>
+
+    <!-- GDPR consent -->
+    <div class="quiz-gdpr-wrap">
+      <label class="quiz-gdpr-label">
+        <input
+          id="quiz-gdpr"
+          type="checkbox"
+          name="gdpr"
+          class="quiz-gdpr-checkbox"
+          aria-required="true"
+          aria-describedby="quiz-gdpr-error"
+        />
+        <span>
+          {gdprHasLink
+            ? <>{gdprParts[0]}<a href="/privacy-policy" class="quiz-privacy-link" target="_blank" rel="noopener">{gdprLinkWord}</a>{gdprParts[1]}</>
+            : gdprFullText
+          }
+        </span>
+      </label>
+      <p id="quiz-gdpr-error" class="quiz-field-error" role="alert" aria-live="assertive"></p>
+    </div>
+
+    <!-- API-level error message -->
+    <p id="quiz-submit-error" class="quiz-submit-error" role="alert" aria-live="assertive"></p>
+
+    <!-- Submit button -->
+    <button id="quiz-submit" type="button" class="quiz-cta-btn quiz-submit-btn" aria-live="polite">
+      <span class="quiz-submit-label">{labels.step5Submit}</span>
+      <span class="quiz-submit-spinner" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <circle cx="10" cy="10" r="8" stroke="rgba(255,255,255,0.3)" stroke-width="2.5"/>
+          <path d="M10 2a8 8 0 0 1 8 8" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span class="quiz-submit-sending-text">{labels.step5Sending}</span>
+    </button>
+
+  </div><!-- /step-5 -->
+
+  <!-- ── Step 6: Thank You ───────────────────────────────── -->
+  <div class="quiz-panel" data-step="6" aria-hidden="true" role="group" aria-labelledby="quiz-s6-title">
+
+    <!-- Animated checkmark -->
+    <div class="quiz-check-wrap" aria-hidden="true">
+      <svg class="quiz-check-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle
+          class="quiz-check-circle"
+          cx="32"
+          cy="32"
+          r="28"
+          stroke="#D40074"
+          stroke-width="2.5"
+          fill="none"
+        />
+        <polyline
+          class="quiz-check-tick"
+          points="20,33 28,42 44,24"
+          stroke="#D40074"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          fill="none"
+        />
+      </svg>
+    </div>
+
+    <h2 id="quiz-s6-title" class="quiz-s6-title">{labels.step6Title}</h2>
+
+    <p class="quiz-s6-subtitle">{labels.step6Subtitle}</p>
+
+    <a
+      href="tel:+420603445089"
+      class="quiz-s6-phone"
+      aria-label={`${labels.step6Subtitle} ${labels.step6Phone}`}
+    >
+      {labels.step6Phone}
+    </a>
+
+  </div><!-- /step-6 -->
+
+</div><!-- /hero-quiz -->
+
+<!-- =========================================================
+     Styles
+     ========================================================= -->
+<style>
+  /* ── Card ─────────────────────────────────────────────── */
+  .hero-quiz-card {
+    position: relative;
+    max-width: 680px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    background: #111111;
+    border: 1px solid #2a2a2a;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow:
+      0 0 0 1px #1a1a1a,
+      0 24px 64px rgba(212, 0, 116, 0.08);
+    min-height: 380px;
+    /* isolate stacking context for transitions */
+    overflow: hidden;
+  }
+
+  /* ── Step Indicator ────────────────────────────────────── */
+  .quiz-step-indicator {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+
+  .quiz-dot {
+    display: block;
+    height: 6px;
+    width: 8px;
+    border-radius: 999px;
+    background: #2a2a2a;
+    transition: background 0.25s, width 0.25s;
+  }
+
+  .quiz-dot[data-active="true"] {
+    background: #D40074;
+    width: 16px; /* slightly wider to mark active */
+  }
+
+  .quiz-dot[data-completed="true"] {
+    background: #9F0057;
+  }
+
+  /* ── Back Button ───────────────────────────────────────── */
+  .quiz-back-btn {
+    display: none; /* shown by JS on steps 2-4 */
+    background: none;
+    border: none;
+    padding: 0;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #555555;
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+  }
+
+  .quiz-back-btn:hover {
+    color: #DADADA;
+  }
+
+  .quiz-back-btn:focus-visible {
+    outline: 2px solid #D40074;
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  /* ── Panels ───────────────────────────────────────────── */
+  .quiz-panel {
+    /* All panels stack in same grid cell */
+    display: none;
+    flex-direction: column;
+    /* transitions use JS-added classes */
+  }
+
+  .quiz-panel[data-active="true"] {
+    display: flex;
+  }
+
+  /* Slide-in/out transition classes (added by JS) */
+  @media (prefers-reduced-motion: no-preference) {
+    .quiz-panel--exit {
+      animation: quizSlideOut 0.2s ease-in forwards;
+    }
+    .quiz-panel--enter {
+      animation: quizSlideIn 0.25s cubic-bezier(0.16, 1, 0.32, 1) forwards;
+    }
+  }
+
+  @keyframes quizSlideOut {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(-30px); }
+  }
+
+  @keyframes quizSlideIn {
+    from { opacity: 0; transform: translateX(30px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ── Step titles ──────────────────────────────────────── */
+  .quiz-step-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #FFFFFF;
+    margin: 0 0 24px;
+    line-height: 1.3;
+  }
+
+  /* ── Step 1: Capacity ─────────────────────────────────── */
+  .quiz-capacity-display {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    margin-bottom: 20px;
+    line-height: 1;
+  }
+
+  #quiz-kw-display {
+    font-size: 48px;
+    font-weight: 700;
+    color: #FFFFFF;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -1px;
+  }
+
+  .quiz-unit {
+    font-size: 22px;
+    font-weight: 500;
+    color: #9a9a9a;
+  }
+
+  /* Range slider */
+  .quiz-slider-wrap {
+    margin-bottom: 20px;
+  }
+
+  .quiz-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: #2a2a2a; /* will be overridden inline by JS for filled portion */
+    outline: none;
+    cursor: pointer;
+  }
+
+  /* Thumb — webkit */
+  .quiz-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid #D40074;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    transition: transform 0.15s;
+  }
+
+  .quiz-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+  }
+
+  /* Thumb — moz */
+  .quiz-slider::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid #D40074;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.0);
+  }
+
+  /* Track filled portion is rendered via background gradient set in JS */
+
+  /* Manual label */
+  .quiz-manual-label {
+    display: block;
+    font-size: 13px;
+    color: #777777;
+    margin-bottom: 8px;
+  }
+
+  /* Manual input */
+  .quiz-manual-input {
+    width: 120px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 15px;
+    color: #FFFFFF;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 6px;
+    /* hide browser spinners */
+    -moz-appearance: textfield;
+  }
+
+  .quiz-manual-input::-webkit-outer-spin-button,
+  .quiz-manual-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .quiz-manual-input:focus {
+    border-color: #D40074;
+    box-shadow: 0 0 0 3px rgba(212, 0, 116, 0.15);
+  }
+
+  /* Validation error */
+  .quiz-error {
+    font-size: 13px;
+    color: #ff5c8a;
+    min-height: 18px;
+    margin: 0 0 12px;
+    transition: opacity 0.2s;
+  }
+
+  .quiz-error:empty {
+    opacity: 0;
+  }
+
+  /* ── CTA button ───────────────────────────────────────── */
+  .quiz-cta-btn {
+    display: block;
+    width: 100%;
+    height: 52px;
+    margin-top: 24px;
+    background: #D40074;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s, opacity 0.3s;
+    letter-spacing: 0.01em;
+  }
+
+  .quiz-cta-btn:hover {
+    background: #b8005f;
+  }
+
+  .quiz-cta-btn:active {
+    transform: scale(0.98);
+  }
+
+  .quiz-cta-btn:focus-visible {
+    outline: 2px solid #D40074;
+    outline-offset: 3px;
+  }
+
+  /* Hidden state for Step 3 CTA (appears after dwell) */
+  .quiz-cta-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Pulse glow animation for Step 3 CTA */
+  @media (prefers-reduced-motion: no-preference) {
+    .quiz-cta-pulse:not(.quiz-cta-hidden) {
+      animation: quizCtaPulse 2s ease-in-out infinite;
+    }
+  }
+
+  @keyframes quizCtaPulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(212, 0, 116, 0.2); }
+    50%      { box-shadow: 0 0 24px 6px rgba(212, 0, 116, 0.5); }
+  }
+
+  /* ── Step 2: Year grid ────────────────────────────────── */
+  .quiz-year-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  /* ── Step 4: Yes/No grid ──────────────────────────────── */
+  .quiz-yn-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  /* ── Option buttons (shared steps 2 & 4) ─────────────── */
+  .quiz-option-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 72px;
+    padding: 12px 8px;
+    background: #1a1a1a;
+    border: 1.5px solid #2a2a2a;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.1s;
+    gap: 4px;
+  }
+
+  .quiz-option-btn:hover {
+    border-color: rgba(212, 0, 116, 0.5);
+    background: rgba(212, 0, 116, 0.04);
+  }
+
+  .quiz-option-btn:active {
+    transform: scale(0.97);
+  }
+
+  .quiz-option-btn:focus-visible {
+    outline: 2px solid #D40074;
+    outline-offset: 2px;
+  }
+
+  .quiz-option-btn[aria-pressed="true"] {
+    border-color: #D40074;
+    background: rgba(212, 0, 116, 0.08);
+  }
+
+  .quiz-option-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #FFFFFF;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .quiz-option-sub {
+    font-size: 13px;
+    color: #B2B2B2;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* ── Step 3: Result ───────────────────────────────────── */
+  .quiz-result-prefix {
+    font-size: 16px;
+    color: #B2B2B2;
+    margin: 0 0 12px;
+  }
+
+  .quiz-result-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    margin-bottom: 16px;
+    line-height: 1;
+  }
+
+  .quiz-result-number {
+    font-size: clamp(36px, 10vw, 72px);
+    font-weight: 700;
+    color: #D40074;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -2px;
+  }
+
+  .quiz-result-suffix {
+    font-size: 32px;
+    font-weight: 600;
+    color: #FFFFFF;
+  }
+
+  .quiz-result-days {
+    font-size: 18px;
+    color: #DADADA;
+    margin: 0 0 0;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.2s; /* 200ms delay */
+  }
+
+  .quiz-result-days--visible {
+    opacity: 1;
+  }
+
+  /* ── Step 5: Form fields ──────────────────────────────── */
+  .quiz-form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 0;
+  }
+
+  .quiz-field-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .quiz-field-label {
+    display: block;
+    font-size: 13px;
+    color: #DADADA;
+    margin-bottom: 6px; /* mb-1.5 ~ 6px */
+    line-height: 1.3;
+  }
+
+  .quiz-field-input {
+    height: 52px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 0 16px;
+    font-size: 16px; /* 16px prevents iOS auto-zoom */
+    color: #FFFFFF;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .quiz-field-input::placeholder {
+    color: #555555;
+  }
+
+  .quiz-field-input:focus {
+    border-color: #D40074;
+    box-shadow: 0 0 0 3px rgba(212, 0, 116, 0.15);
+  }
+
+  .quiz-field-input[aria-invalid="true"] {
+    border-color: #FF4444;
+  }
+
+  .quiz-field-input[aria-invalid="true"]:focus {
+    box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.15);
+  }
+
+  .quiz-field-error {
+    font-size: 12px;
+    color: #FF4444;
+    min-height: 16px;
+    margin: 4px 0 0;
+    line-height: 1.3;
+    transition: opacity 0.2s;
+  }
+
+  .quiz-field-error:empty {
+    opacity: 0;
+  }
+
+  /* ── Step 5: GDPR ─────────────────────────────────────── */
+  .quiz-gdpr-wrap {
+    margin-top: 16px;
+  }
+
+  .quiz-gdpr-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 11px;
+    color: #555555;
+    line-height: 1.5;
+  }
+
+  .quiz-gdpr-checkbox {
+    flex-shrink: 0;
+    margin-top: 2px;
+    width: 16px;
+    height: 16px;
+    accent-color: #D40074;
+    cursor: pointer;
+  }
+
+  .quiz-privacy-link {
+    color: #B2B2B2;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.2s;
+  }
+
+  .quiz-privacy-link:hover {
+    color: #FFFFFF;
+  }
+
+  /* ── Step 5: Submit button states ─────────────────────── */
+  .quiz-submit-btn {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .quiz-submit-spinner,
+  .quiz-submit-sending-text {
+    display: none;
+  }
+
+  .quiz-submit-btn[data-loading="true"] .quiz-submit-label {
+    display: none;
+  }
+
+  .quiz-submit-btn[data-loading="true"] .quiz-submit-spinner {
+    display: flex;
+    align-items: center;
+  }
+
+  .quiz-submit-btn[data-loading="true"] .quiz-submit-sending-text {
+    display: inline;
+  }
+
+  .quiz-submit-btn[data-loading="true"] {
+    opacity: 0.75;
+    cursor: not-allowed;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .quiz-submit-spinner svg {
+      animation: quizSpinnerRotate 0.8s linear infinite;
+    }
+  }
+
+  @keyframes quizSpinnerRotate {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  /* ── Step 5: API error ────────────────────────────────── */
+  .quiz-submit-error {
+    font-size: 13px;
+    color: #FF4444;
+    min-height: 0;
+    margin: 12px 0 0;
+    line-height: 1.4;
+    transition: opacity 0.2s;
+  }
+
+  .quiz-submit-error:empty {
+    display: none;
+  }
+
+  /* ── Step 6: Checkmark ────────────────────────────────── */
+  .quiz-check-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  .quiz-check-svg {
+    width: 64px;
+    height: 64px;
+  }
+
+  .quiz-check-circle {
+    stroke-dasharray: 176; /* circumference of r=28: 2*PI*28 ≈ 176 */
+    stroke-dashoffset: 176;
+    transform-origin: 32px 32px;
+    transform: rotate(-90deg);
+  }
+
+  .quiz-check-tick {
+    /* polyline path length: approx 36px */
+    stroke-dasharray: 36;
+    stroke-dashoffset: 36;
+  }
+
+  /* Animate when step 6 panel becomes active */
+  .quiz-panel[data-step="6"][data-active="true"] .quiz-check-circle {
+    animation: quizCheckCircle 0.45s cubic-bezier(0.16, 1, 0.32, 1) 0.05s forwards;
+  }
+
+  .quiz-panel[data-step="6"][data-active="true"] .quiz-check-tick {
+    animation: quizCheckTick 0.3s cubic-bezier(0.16, 1, 0.32, 1) 0.45s forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .quiz-check-circle,
+    .quiz-check-tick {
+      animation: none !important;
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes quizCheckCircle {
+    to { stroke-dashoffset: 0; }
+  }
+
+  @keyframes quizCheckTick {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* ── Step 6: Text + CTA ───────────────────────────────── */
+  .quiz-s6-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #FFFFFF;
+    margin: 0 0 12px;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .quiz-s6-subtitle {
+    font-size: 14px;
+    color: #B2B2B2;
+    margin: 0 0 16px;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .quiz-s6-phone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    font-size: clamp(24px, 5vw, 32px);
+    color: #D40074;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+    transition: color 0.2s, opacity 0.2s;
+    line-height: 1;
+  }
+
+  .quiz-s6-phone:hover {
+    color: #FF1A8C;
+    opacity: 0.9;
+  }
+
+  .quiz-s6-phone:focus-visible {
+    outline: 2px solid #D40074;
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  /* ── Responsive ───────────────────────────────────────── */
+  @media (max-width: 480px) {
+    .hero-quiz-card {
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .quiz-year-grid {
+      grid-template-columns: 1fr; /* stack vertically on mobile */
+    }
+
+    .quiz-slider::-webkit-slider-thumb {
+      width: 36px;
+      height: 36px;
+    }
+
+    .quiz-slider::-moz-range-thumb {
+      width: 36px;
+      height: 36px;
+    }
+  }
+</style>
+
+<!-- =========================================================
+     Script — state machine
+     ========================================================= -->
+<script define:vars={{
+  labelErrorCapacity: labels.errorCapacity,
+  labelErrorRequired: labels.errorRequired,
+  labelErrorEmail:    labels.errorEmail,
+  labelErrorPhone:    labels.errorPhone,
+  labelErrorSubmit:   labels.errorSubmit,
+  labelStep3Days:     labels.step3Days,
+  reducedMotionHint:  false
+}}>
+  // ── Constants ─────────────────────────────────────────────
+  const RATES = {
+    '2008-2014': 0.30,
+    '2015-2019': 0.16,
+    '2020+':     0.08,
+  };
+  const ANNUAL_HOURS = 1100;
+  const ENERGY_PRICE = 4.20;
+
+  // ── Helpers ───────────────────────────────────────────────
+  function calcLoss(kw, yearKey) {
+    const rate = RATES[yearKey];
+    if (!rate) return 0;
+    return Math.round(kw * rate * ANNUAL_HOURS * ENERGY_PRICE);
+  }
+
+  /** Czech thousands separator (non-breaking space) */
+  function formatCzk(n) {
+    return n.toLocaleString('cs-CZ');
+  }
+
+  function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  // ── State ─────────────────────────────────────────────────
+  const state = {
+    step:          1,
+    capacityKw:    10,
+    yearRange:     null,
+    annualLoss:    null,
+    planExpansion: null,
+  };
+
+  // ── DOM refs ──────────────────────────────────────────────
+  const card          = document.getElementById('hero-quiz');
+  const backBtn       = document.getElementById('quiz-back');
+  const slider        = /** @type {HTMLInputElement} */ (document.getElementById('quiz-slider'));
+  const kwDisplay     = document.getElementById('quiz-kw-display');
+  const manualInput   = /** @type {HTMLInputElement} */ (document.getElementById('quiz-capacity-input'));
+  const s1Error       = document.getElementById('quiz-s1-error');
+  const s1Continue    = document.getElementById('quiz-s1-continue');
+  const resultNum     = document.getElementById('quiz-result-number');
+  const resultDays    = document.getElementById('quiz-s3-days');
+  const s3Cta         = document.getElementById('quiz-s3-cta');
+
+  // Step 5 form refs
+  const nameInput     = /** @type {HTMLInputElement} */ (document.getElementById('quiz-name'));
+  const emailInput    = /** @type {HTMLInputElement} */ (document.getElementById('quiz-email'));
+  const phoneInput    = /** @type {HTMLInputElement} */ (document.getElementById('quiz-phone'));
+  const gdprCheckbox  = /** @type {HTMLInputElement} */ (document.getElementById('quiz-gdpr'));
+  const honeypotInput = /** @type {HTMLInputElement} */ (document.getElementById('quiz-honeypot'));
+  const nameError     = document.getElementById('quiz-name-error');
+  const emailError    = document.getElementById('quiz-email-error');
+  const phoneError    = document.getElementById('quiz-phone-error');
+  const gdprError     = document.getElementById('quiz-gdpr-error');
+  const submitError   = document.getElementById('quiz-submit-error');
+  const submitBtn     = document.getElementById('quiz-submit');
+  // The GDPR label span (used for consent text snapshot)
+  const gdprLabel     = document.querySelector('#quiz-gdpr + span') ||
+                        document.querySelector('.quiz-gdpr-label span');
+
+  const panels = Array.from(document.querySelectorAll('.quiz-panel'));
+  const dots   = Array.from(document.querySelectorAll('.quiz-dot'));
+
+  // Tracks the count-up animation frame so we can cancel on re-entry
+  let countUpRAF = null;
+  // Tracks the dwell timeout for step 3 CTA
+  let dwellTimeout = null;
+  // Tracks auto-advance timeout
+  let autoAdvanceTimeout = null;
+
+  // ── Slider fill (gradient on track) ───────────────────────
+  function updateSliderFill(val, min, max) {
+    const pct = ((val - min) / (max - min)) * 100;
+    slider.style.background =
+      `linear-gradient(to right, #9F0057 0%, #D40074 ${pct}%, #2a2a2a ${pct}%, #2a2a2a 100%)`;
+    slider.setAttribute('aria-valuenow', String(val));
+  }
+
+  // ── Step indicator ────────────────────────────────────────
+  function updateDots(activeStep) {
+    dots.forEach((dot, i) => {
+      const n = i + 1;
+      if (n < activeStep) {
+        dot.removeAttribute('data-active');
+        dot.setAttribute('data-completed', 'true');
+      } else if (n === activeStep) {
+        dot.setAttribute('data-active', 'true');
+        dot.removeAttribute('data-completed');
+      } else {
+        dot.removeAttribute('data-active');
+        dot.removeAttribute('data-completed');
+      }
+    });
+  }
+
+  // ── Back button visibility ─────────────────────────────────
+  // Only shown on steps 2, 3, 4. Hidden on 1, 5, 6.
+  function updateBackBtn(step) {
+    const showOn = [2, 3, 4];
+    backBtn.style.display = showOn.includes(step) ? 'block' : 'none';
+  }
+
+  // ── Panel transitions ─────────────────────────────────────
+  function showPanel(targetStep) {
+    const reduced = prefersReducedMotion();
+
+    panels.forEach(panel => {
+      const panelStep = parseInt(panel.getAttribute('data-step') || '0', 10);
+      const isTarget = panelStep === targetStep;
+
+      if (isTarget) {
+        panel.setAttribute('data-active', 'true');
+        panel.removeAttribute('aria-hidden');
+
+        if (!reduced) {
+          panel.classList.remove('quiz-panel--exit', 'quiz-panel--enter');
+          // force reflow
+          void panel.offsetWidth;
+          panel.classList.add('quiz-panel--enter');
+          panel.addEventListener('animationend', () => {
+            panel.classList.remove('quiz-panel--enter');
+          }, { once: true });
+        }
+      } else if (panel.getAttribute('data-active') === 'true') {
+        // Currently active — exit it
+        if (!reduced) {
+          panel.classList.add('quiz-panel--exit');
+          panel.addEventListener('animationend', () => {
+            panel.removeAttribute('data-active');
+            panel.setAttribute('aria-hidden', 'true');
+            panel.classList.remove('quiz-panel--exit');
+          }, { once: true });
+        } else {
+          panel.removeAttribute('data-active');
+          panel.setAttribute('aria-hidden', 'true');
+        }
+      }
+    });
+  }
+
+  // ── Main render ───────────────────────────────────────────
+  function render() {
+    updateDots(state.step);
+    updateBackBtn(state.step);
+    showPanel(state.step);
+
+    // Step-specific side-effects
+    if (state.step === 3) {
+      startStep3();
+    }
+  }
+
+  // ── Navigate forward/back ─────────────────────────────────
+  function goTo(step) {
+    clearTimeout(autoAdvanceTimeout);
+    state.step = step;
+    render();
+  }
+
+  function goBack() {
+    // Back is disabled on steps 5 and 6
+    if (state.step > 1 && state.step < 5) {
+      goTo(state.step - 1);
+    }
+  }
+
+  // ── Step 1 validation + advance ───────────────────────────
+  function validateCapacity() {
+    const val = parseFloat(manualInput.value);
+    if (!val || val <= 0 || val > 5000) {
+      s1Error.textContent = labelErrorCapacity;
+      manualInput.focus();
+      return false;
+    }
+    s1Error.textContent = '';
+    return true;
+  }
+
+  // ── Step 3: count-up + dwell CTA ──────────────────────────
+  function startStep3() {
+    const loss = state.annualLoss || 0;
+
+    // Reset
+    clearTimeout(dwellTimeout);
+    if (countUpRAF) cancelAnimationFrame(countUpRAF);
+    if (s3Cta) {
+      s3Cta.classList.add('quiz-cta-hidden');
+      s3Cta.style.pointerEvents = 'none';
+    }
+    if (resultDays) resultDays.classList.remove('quiz-result-days--visible');
+
+    if (prefersReducedMotion()) {
+      // Skip animation
+      if (resultNum) resultNum.textContent = formatCzk(loss);
+      showDaysLine(loss);
+      revealCtaAfterDwell();
+      return;
+    }
+
+    const duration  = 1200; // ms
+    const startTime = performance.now();
+    const easeOut   = (t) => 1 - Math.pow(1 - t, 3); // cubic ease-out
+
+    function tick(now) {
+      const elapsed  = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased    = easeOut(progress);
+      const current  = Math.round(eased * loss);
+
+      if (resultNum) resultNum.textContent = formatCzk(current);
+
+      if (progress < 1) {
+        countUpRAF = requestAnimationFrame(tick);
+      } else {
+        // Count-up done — show supporting line
+        showDaysLine(loss);
+        revealCtaAfterDwell();
+      }
+    }
+
+    countUpRAF = requestAnimationFrame(tick);
+  }
+
+  function showDaysLine(loss) {
+    if (!resultDays) return;
+    const days = 365;
+    resultDays.textContent = labelStep3Days.replace('{days}', String(days));
+    // Trigger CSS transition (200ms delay is in stylesheet)
+    resultDays.classList.add('quiz-result-days--visible');
+  }
+
+  function revealCtaAfterDwell() {
+    if (!s3Cta) return;
+    dwellTimeout = setTimeout(() => {
+      s3Cta.classList.remove('quiz-cta-hidden');
+      s3Cta.style.pointerEvents = '';
+    }, 1800);
+  }
+
+  // ── Step 5: field-level validation ────────────────────────
+  function setFieldError(input, errorEl, message) {
+    if (!input || !errorEl) return;
+    if (message) {
+      errorEl.textContent = message;
+      input.setAttribute('aria-invalid', 'true');
+    } else {
+      errorEl.textContent = '';
+      input.removeAttribute('aria-invalid');
+    }
+  }
+
+  function validateName() {
+    const val = nameInput ? nameInput.value.trim() : '';
+    if (!val) {
+      setFieldError(nameInput, nameError, labelErrorRequired);
+      return false;
+    }
+    if (val.length < 2 || val.length > 100) {
+      setFieldError(nameInput, nameError, labelErrorRequired);
+      return false;
+    }
+    setFieldError(nameInput, nameError, '');
+    return true;
+  }
+
+  function validateEmail() {
+    const val = emailInput ? emailInput.value.trim() : '';
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!val || !emailPattern.test(val)) {
+      setFieldError(emailInput, emailError, labelErrorEmail);
+      return false;
+    }
+    setFieldError(emailInput, emailError, '');
+    return true;
+  }
+
+  function validatePhone() {
+    const val = phoneInput ? phoneInput.value.trim() : '';
+    if (!val || val.length < 6) {
+      setFieldError(phoneInput, phoneError, labelErrorPhone);
+      return false;
+    }
+    setFieldError(phoneInput, phoneError, '');
+    return true;
+  }
+
+  function validateGdpr() {
+    if (!gdprCheckbox || !gdprCheckbox.checked) {
+      if (gdprError) gdprError.textContent = labelErrorRequired;
+      return false;
+    }
+    if (gdprError) gdprError.textContent = '';
+    return true;
+  }
+
+  function validateStep5Form() {
+    const ok1 = validateName();
+    const ok2 = validateEmail();
+    const ok3 = validatePhone();
+    const ok4 = validateGdpr();
+    // Focus first invalid field
+    if (!ok1 && nameInput)  { nameInput.focus();  }
+    else if (!ok2 && emailInput) { emailInput.focus(); }
+    else if (!ok3 && phoneInput) { phoneInput.focus(); }
+    return ok1 && ok2 && ok3 && ok4;
+  }
+
+  // ── Step 5: submit loading state ──────────────────────────
+  function setSubmitLoading(loading) {
+    if (!submitBtn) return;
+    if (loading) {
+      submitBtn.setAttribute('data-loading', 'true');
+      submitBtn.setAttribute('disabled', '');
+      submitBtn.setAttribute('aria-label', 'Sending...');
+    } else {
+      submitBtn.removeAttribute('data-loading');
+      submitBtn.removeAttribute('disabled');
+      submitBtn.removeAttribute('aria-label');
+    }
+  }
+
+  // ── Step 5: API submission ─────────────────────────────────
+  async function submitQuizLead() {
+    if (!validateStep5Form()) return;
+
+    // Clear any previous API error
+    if (submitError) submitError.textContent = '';
+
+    setSubmitLoading(true);
+
+    const consentText = gdprLabel ? (gdprLabel.textContent || '').trim() : '';
+
+    const payload = {
+      name:          nameInput  ? nameInput.value.trim()                      : '',
+      email:         emailInput ? emailInput.value.trim().toLowerCase()        : '',
+      phone:         phoneInput ? phoneInput.value.trim()                      : '',
+      capacityKw:    state.capacityKw,
+      panelYear:     state.yearRange,
+      planExpansion: state.planExpansion,
+      consent: {
+        timestamp:     new Date().toISOString(),
+        policyVersion: '2026-03',
+        consentText:   consentText,
+      },
+      _honeypot: honeypotInput ? honeypotInput.value : '',
+    };
+
+    try {
+      const response = await fetch('/api/quiz-lead', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+      });
+
+      if (response.ok || response.status === 202) {
+        // Success — advance to thank-you step
+        setSubmitLoading(false);
+        goTo(6);
+        return;
+      }
+
+      // Handle known error codes
+      if (response.status === 400) {
+        // Attempt to read field-level errors from response body
+        let body = null;
+        try { body = await response.json(); } catch (_) {}
+
+        if (body && body.errors && Array.isArray(body.errors)) {
+          // Apply any field-specific errors from the API
+          body.errors.forEach(e => {
+            if (e.field === 'name')  setFieldError(nameInput,  nameError,  e.message);
+            if (e.field === 'email') setFieldError(emailInput, emailError, e.message);
+            if (e.field === 'phone') setFieldError(phoneInput, phoneError, e.message);
+          });
+        } else {
+          if (submitError) submitError.textContent = labelErrorSubmit;
+        }
+        setSubmitLoading(false);
+        return;
+      }
+
+      if (response.status === 429) {
+        // Rate limit
+        let body = null;
+        try { body = await response.json(); } catch (_) {}
+        if (submitError) {
+          submitError.textContent = (body && body.message) ? body.message : labelErrorSubmit;
+        }
+        setSubmitLoading(false);
+        return;
+      }
+
+      // 500 or other
+      if (submitError) submitError.textContent = labelErrorSubmit;
+      setSubmitLoading(false);
+
+    } catch (networkErr) {
+      // Network failure
+      if (submitError) submitError.textContent = labelErrorSubmit;
+      setSubmitLoading(false);
+    }
+  }
+
+  // ── Event: slider input ───────────────────────────────────
+  slider.addEventListener('input', () => {
+    const val = parseInt(slider.value, 10);
+    state.capacityKw = val;
+    if (kwDisplay) kwDisplay.textContent = String(val);
+    manualInput.value = String(val);
+    updateSliderFill(val, 1, 500);
+    s1Error.textContent = '';
+  });
+
+  // ── Event: manual number input ────────────────────────────
+  manualInput.addEventListener('input', () => {
+    const raw = parseFloat(manualInput.value);
+    s1Error.textContent = '';
+
+    if (raw > 0 && raw <= 5000) {
+      state.capacityKw = raw;
+      if (kwDisplay) kwDisplay.textContent = String(raw);
+
+      // Sync slider (capped at its max 500)
+      const sliderVal = Math.min(raw, 500);
+      slider.value = String(sliderVal);
+      updateSliderFill(sliderVal, 1, 500);
+    }
+  });
+
+  // ── Event: Step 1 continue ────────────────────────────────
+  s1Continue.addEventListener('click', () => {
+    if (validateCapacity()) {
+      goTo(2);
+    }
+  });
+
+  // ── Event: Step 2 year options ────────────────────────────
+  const yearBtns = document.querySelectorAll('[data-year]');
+  yearBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const year = btn.getAttribute('data-year');
+
+      // Visual selected state
+      yearBtns.forEach(b => b.setAttribute('aria-pressed', 'false'));
+      btn.setAttribute('aria-pressed', 'true');
+
+      state.yearRange = year;
+      state.annualLoss = calcLoss(state.capacityKw, year);
+
+      // Auto-advance after 300ms
+      autoAdvanceTimeout = setTimeout(() => goTo(3), 300);
+    });
+  });
+
+  // ── Event: Step 3 CTA (advance to step 4) ─────────────────
+  if (s3Cta) {
+    s3Cta.addEventListener('click', () => goTo(4));
+  }
+
+  // ── Event: Step 4 expansion options ──────────────────────
+  const expansionBtns = document.querySelectorAll('[data-expansion]');
+  expansionBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.getAttribute('data-expansion');
+
+      expansionBtns.forEach(b => b.setAttribute('aria-pressed', 'false'));
+      btn.setAttribute('aria-pressed', 'true');
+
+      state.planExpansion = (val === 'yes');
+
+      // Auto-advance after 300ms
+      autoAdvanceTimeout = setTimeout(() => goTo(5), 300);
+    });
+  });
+
+  // ── Event: Step 5 submit ──────────────────────────────────
+  if (submitBtn) {
+    submitBtn.addEventListener('click', () => {
+      submitQuizLead();
+    });
+  }
+
+  // ── Event: Step 5 live validation on blur ─────────────────
+  if (nameInput)  nameInput.addEventListener('blur',  validateName);
+  if (emailInput) emailInput.addEventListener('blur', validateEmail);
+  if (phoneInput) phoneInput.addEventListener('blur', validatePhone);
+  if (gdprCheckbox) gdprCheckbox.addEventListener('change', validateGdpr);
+
+  // Clear field errors on input once they have been shown
+  if (nameInput) {
+    nameInput.addEventListener('input', () => {
+      if (nameInput.getAttribute('aria-invalid') === 'true') validateName();
+    });
+  }
+  if (emailInput) {
+    emailInput.addEventListener('input', () => {
+      if (emailInput.getAttribute('aria-invalid') === 'true') validateEmail();
+    });
+  }
+  if (phoneInput) {
+    phoneInput.addEventListener('input', () => {
+      if (phoneInput.getAttribute('aria-invalid') === 'true') validatePhone();
+    });
+  }
+
+  // ── Event: back button ────────────────────────────────────
+  backBtn.addEventListener('click', goBack);
+
+  // ── Keyboard: Enter on slider ─────────────────────────────
+  // (Range sliders already handle arrow keys natively)
+
+  // ── Init ──────────────────────────────────────────────────
+  // Show first panel without animation, set up initial state
+  updateSliderFill(state.capacityKw, 1, 500);
+  updateDots(1);
+  updateBackBtn(1);
+
+  // Activate step 1 panel directly (no animation on load)
+  const step1Panel = document.querySelector('.quiz-panel[data-step="1"]');
+  if (step1Panel) {
+    step1Panel.setAttribute('data-active', 'true');
+    step1Panel.removeAttribute('aria-hidden');
+  }
+</script>

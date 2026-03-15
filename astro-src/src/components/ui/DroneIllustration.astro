@@ -1,0 +1,469 @@
+---
+interface Props {
+  variant?: 'hero' | 'scanning' | 'solar-grid' | 'overhead' | 'panel-detail';
+  class?: string;
+}
+
+const { variant = 'hero', class: className = '' } = Astro.props;
+---
+
+{variant === 'hero' && (
+  <!-- Large drone scanning solar panels — full scene illustration -->
+  <div class={`drone-scene-hero ${className}`}>
+    <svg viewBox="0 0 600 400" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="hBeamGrad" x1="300" y1="100" x2="300" y2="380" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#D40074" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#D40074" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="hPanelGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#1a1a2e"/>
+          <stop offset="100%" stop-color="#0f0f1a"/>
+        </linearGradient>
+        <filter id="hGlow">
+          <feGaussianBlur stdDeviation="3" result="glow"/>
+          <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- Solar panel field (perspective rows) -->
+      <g class="solar-field">
+        <!-- Row 1 (back) -->
+        <g transform="translate(80, 280)">
+          <rect width="80" height="45" rx="2" fill="url(#hPanelGrad)" stroke="rgba(212,0,116,0.15)" stroke-width="0.75"/>
+          <line x1="20" y1="0" x2="20" y2="45" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="40" y1="0" x2="40" y2="45" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="60" y1="0" x2="60" y2="45" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="0" y1="15" x2="80" y2="15" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="0" y1="30" x2="80" y2="30" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+        </g>
+        <g transform="translate(170, 280)">
+          <rect width="80" height="45" rx="2" fill="url(#hPanelGrad)" stroke="rgba(212,0,116,0.15)" stroke-width="0.75"/>
+          <line x1="20" y1="0" x2="20" y2="45" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="40" y1="0" x2="40" y2="45" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="60" y1="0" x2="60" y2="45" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="0" y1="15" x2="80" y2="15" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="0" y1="30" x2="80" y2="30" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+        </g>
+        <g transform="translate(260, 280)">
+          <rect width="80" height="45" rx="2" fill="url(#hPanelGrad)" stroke="rgba(212,0,116,0.15)" stroke-width="0.75"/>
+          <line x1="20" y1="0" x2="20" y2="45" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="40" y1="0" x2="40" y2="45" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="60" y1="0" x2="60" y2="45" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="0" y1="15" x2="80" y2="15" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="0" y1="30" x2="80" y2="30" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+        </g>
+        <g transform="translate(350, 280)">
+          <rect width="80" height="45" rx="2" fill="url(#hPanelGrad)" stroke="rgba(212,0,116,0.15)" stroke-width="0.75"/>
+          <line x1="20" y1="0" x2="20" y2="45" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="40" y1="0" x2="40" y2="45" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="60" y1="0" x2="60" y2="45" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="0" y1="15" x2="80" y2="15" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+          <line x1="0" y1="30" x2="80" y2="30" stroke="rgba(212,0,116,0.1)" stroke-width="0.5"/>
+        </g>
+
+        <!-- Hotspot defects on panels (pulsing) -->
+        <circle cx="130" cy="295" r="5" fill="rgba(212,0,116,0.5)" class="defect-pulse"/>
+        <circle cx="130" cy="295" r="10" fill="none" stroke="rgba(212,0,116,0.3)" stroke-width="0.75" class="defect-ring"/>
+        <circle cx="310" cy="300" r="4" fill="rgba(255,100,0,0.5)" class="defect-pulse defect-2"/>
+        <circle cx="310" cy="300" r="8" fill="none" stroke="rgba(255,100,0,0.3)" stroke-width="0.75" class="defect-ring defect-2"/>
+        <circle cx="400" cy="290" r="6" fill="rgba(212,0,116,0.4)" class="defect-pulse defect-3"/>
+        <circle cx="400" cy="290" r="12" fill="none" stroke="rgba(212,0,116,0.2)" stroke-width="0.75" class="defect-ring defect-3"/>
+
+        <!-- Row 2 (front, larger) -->
+        <g transform="translate(60, 340)">
+          <rect width="100" height="50" rx="2" fill="url(#hPanelGrad)" stroke="rgba(212,0,116,0.12)" stroke-width="0.75"/>
+          <line x1="25" y1="0" x2="25" y2="50" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+          <line x1="50" y1="0" x2="50" y2="50" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+          <line x1="75" y1="0" x2="75" y2="50" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+          <line x1="0" y1="16" x2="100" y2="16" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+          <line x1="0" y1="33" x2="100" y2="33" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+        </g>
+        <g transform="translate(170, 340)">
+          <rect width="100" height="50" rx="2" fill="url(#hPanelGrad)" stroke="rgba(212,0,116,0.12)" stroke-width="0.75"/>
+          <line x1="25" y1="0" x2="25" y2="50" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+          <line x1="50" y1="0" x2="50" y2="50" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+          <line x1="75" y1="0" x2="75" y2="50" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+          <line x1="0" y1="16" x2="100" y2="16" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+          <line x1="0" y1="33" x2="100" y2="33" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+        </g>
+        <g transform="translate(340, 340)">
+          <rect width="100" height="50" rx="2" fill="url(#hPanelGrad)" stroke="rgba(212,0,116,0.12)" stroke-width="0.75"/>
+          <line x1="25" y1="0" x2="25" y2="50" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+          <line x1="50" y1="0" x2="50" y2="50" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+          <line x1="75" y1="0" x2="75" y2="50" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+          <line x1="0" y1="16" x2="100" y2="16" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+          <line x1="0" y1="33" x2="100" y2="33" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+        </g>
+      </g>
+
+      <!-- Thermal scan beam from drone -->
+      <path d="M285 105 L180 280 L420 280 L315 105" fill="url(#hBeamGrad)" opacity="0.6" class="scan-beam"/>
+
+      <!-- Scan sweep line -->
+      <line x1="200" y1="260" x2="400" y2="260" stroke="#D40074" stroke-width="1" stroke-dasharray="6 4" opacity="0.6" class="scan-sweep"/>
+
+      <!-- DRONE (large, prominent) -->
+      <g class="drone-main" filter="url(#hGlow)">
+        <!-- Body -->
+        <rect x="265" y="60" width="70" height="24" rx="12" fill="#1a1a2e" stroke="#D40074" stroke-width="1.5" stroke-opacity="0.6"/>
+
+        <!-- Arms -->
+        <line x1="265" y1="68" x2="195" y2="42" stroke="#2a2a3e" stroke-width="3" stroke-linecap="round"/>
+        <line x1="335" y1="68" x2="405" y2="42" stroke="#2a2a3e" stroke-width="3" stroke-linecap="round"/>
+        <line x1="275" y1="60" x2="215" y2="30" stroke="#2a2a3e" stroke-width="3" stroke-linecap="round"/>
+        <line x1="325" y1="60" x2="385" y2="30" stroke="#2a2a3e" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- Landing gear -->
+        <line x1="275" y1="84" x2="270" y2="98" stroke="#2a2a3e" stroke-width="2" stroke-linecap="round"/>
+        <line x1="325" y1="84" x2="330" y2="98" stroke="#2a2a3e" stroke-width="2" stroke-linecap="round"/>
+        <line x1="262" y1="98" x2="278" y2="98" stroke="#2a2a3e" stroke-width="2" stroke-linecap="round"/>
+        <line x1="322" y1="98" x2="338" y2="98" stroke="#2a2a3e" stroke-width="2" stroke-linecap="round"/>
+
+        <!-- Camera gimbal -->
+        <rect x="290" y="84" width="20" height="12" rx="4" fill="#111" stroke="#D40074" stroke-width="1" stroke-opacity="0.5"/>
+        <circle cx="300" cy="100" r="6" fill="#111" stroke="#D40074" stroke-width="1" stroke-opacity="0.6"/>
+        <circle cx="300" cy="100" r="3" fill="#D40074" opacity="0.8"/>
+
+        <!-- Motor hubs -->
+        <circle cx="195" cy="42" r="6" fill="#1a1a2e" stroke="#D40074" stroke-width="1" stroke-opacity="0.4"/>
+        <circle cx="405" cy="42" r="6" fill="#1a1a2e" stroke="#D40074" stroke-width="1" stroke-opacity="0.4"/>
+        <circle cx="215" cy="30" r="6" fill="#1a1a2e" stroke="#D40074" stroke-width="1" stroke-opacity="0.4"/>
+        <circle cx="385" cy="30" r="6" fill="#1a1a2e" stroke="#D40074" stroke-width="1" stroke-opacity="0.4"/>
+
+        <!-- Rotor blurs -->
+        <ellipse cx="195" cy="42" rx="35" ry="5" fill="rgba(212,0,116,0.12)" stroke="rgba(212,0,116,0.2)" stroke-width="0.5" class="rotor r1"/>
+        <ellipse cx="405" cy="42" rx="35" ry="5" fill="rgba(212,0,116,0.12)" stroke="rgba(212,0,116,0.2)" stroke-width="0.5" class="rotor r2"/>
+        <ellipse cx="215" cy="30" rx="35" ry="5" fill="rgba(212,0,116,0.12)" stroke="rgba(212,0,116,0.2)" stroke-width="0.5" class="rotor r3"/>
+        <ellipse cx="385" cy="30" rx="35" ry="5" fill="rgba(212,0,116,0.12)" stroke="rgba(212,0,116,0.2)" stroke-width="0.5" class="rotor r4"/>
+
+        <!-- LED lights -->
+        <circle cx="275" cy="62" r="2.5" fill="#D40074" class="led"/>
+        <circle cx="325" cy="62" r="2.5" fill="#00ff88" class="led led-g"/>
+      </g>
+    </svg>
+  </div>
+)}
+
+{variant === 'solar-grid' && (
+  <!-- Solar panel grid with hotspot defects — for Problem section -->
+  <div class={`solar-grid-scene ${className}`}>
+    <svg viewBox="0 0 500 300" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="sgPanelGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#1a1a2e"/>
+          <stop offset="100%" stop-color="#0d0d1a"/>
+        </linearGradient>
+      </defs>
+
+      <!-- 4x3 grid of solar panels -->
+      {[0,1,2,3].map(col => [0,1,2].map(row => (
+        <g transform={`translate(${30 + col * 118}, ${20 + row * 90})`}>
+          <rect width="108" height="80" rx="3" fill="url(#sgPanelGrad)" stroke="rgba(212,0,116,0.12)" stroke-width="0.75"/>
+          <!-- Cell grid lines -->
+          <line x1="27" y1="0" x2="27" y2="80" stroke="rgba(212,0,116,0.06)" stroke-width="0.5"/>
+          <line x1="54" y1="0" x2="54" y2="80" stroke="rgba(212,0,116,0.06)" stroke-width="0.5"/>
+          <line x1="81" y1="0" x2="81" y2="80" stroke="rgba(212,0,116,0.06)" stroke-width="0.5"/>
+          <line x1="0" y1="20" x2="108" y2="20" stroke="rgba(212,0,116,0.06)" stroke-width="0.5"/>
+          <line x1="0" y1="40" x2="108" y2="40" stroke="rgba(212,0,116,0.06)" stroke-width="0.5"/>
+          <line x1="0" y1="60" x2="108" y2="60" stroke="rgba(212,0,116,0.06)" stroke-width="0.5"/>
+        </g>
+      )))}
+
+      <!-- Hotspot defects (prominent, animated) -->
+      <circle cx="160" cy="60" r="8" fill="rgba(212,0,116,0.4)" class="defect-pulse"/>
+      <circle cx="160" cy="60" r="16" fill="none" stroke="rgba(212,0,116,0.3)" stroke-width="1" class="defect-ring"/>
+      <text x="160" y="45" text-anchor="middle" fill="#D40074" font-size="9" font-family="var(--font-heading)" font-weight="600" opacity="0.8">HOT SPOT</text>
+
+      <circle cx="380" cy="150" r="10" fill="rgba(255,100,0,0.35)" class="defect-pulse defect-2"/>
+      <circle cx="380" cy="150" r="20" fill="none" stroke="rgba(255,100,0,0.25)" stroke-width="1" class="defect-ring defect-2"/>
+      <text x="380" y="130" text-anchor="middle" fill="#FF6400" font-size="9" font-family="var(--font-heading)" font-weight="600" opacity="0.7">-30%</text>
+
+      <circle cx="100" cy="240" r="6" fill="rgba(212,0,116,0.35)" class="defect-pulse defect-3"/>
+      <circle cx="100" cy="240" r="12" fill="none" stroke="rgba(212,0,116,0.25)" stroke-width="1" class="defect-ring defect-3"/>
+
+      <circle cx="290" cy="55" r="7" fill="rgba(255,60,60,0.3)" class="defect-pulse defect-4"/>
+      <circle cx="290" cy="55" r="14" fill="none" stroke="rgba(255,60,60,0.2)" stroke-width="1" class="defect-ring defect-4"/>
+      <text x="290" y="38" text-anchor="middle" fill="#FF3C3C" font-size="9" font-family="var(--font-heading)" font-weight="600" opacity="0.7">CRACK</text>
+
+      <!-- Thermal scan overlay -->
+      <rect x="25" y="15" width="455" height="275" rx="6" fill="none" stroke="rgba(212,0,116,0.08)" stroke-width="1" stroke-dasharray="8 4"/>
+
+      <!-- Crosshair corners -->
+      <path d="M25 35 L25 15 L45 15" fill="none" stroke="#D40074" stroke-width="1.5" opacity="0.5"/>
+      <path d="M455 15 L480 15 L480 35" fill="none" stroke="#D40074" stroke-width="1.5" opacity="0.5"/>
+      <path d="M25 270 L25 290 L45 290" fill="none" stroke="#D40074" stroke-width="1.5" opacity="0.5"/>
+      <path d="M455 290 L480 290 L480 270" fill="none" stroke="#D40074" stroke-width="1.5" opacity="0.5"/>
+    </svg>
+  </div>
+)}
+
+{variant === 'scanning' && (
+  <!-- Drone actively scanning — for Solution section -->
+  <div class={`drone-scanning-scene ${className}`}>
+    <svg viewBox="0 0 400 350" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="scBeamGrad" x1="200" y1="80" x2="200" y2="320" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#D40074" stop-opacity="0.4"/>
+          <stop offset="70%" stop-color="#D40074" stop-opacity="0.08"/>
+          <stop offset="100%" stop-color="#D40074" stop-opacity="0"/>
+        </linearGradient>
+        <filter id="scGlow">
+          <feGaussianBlur stdDeviation="2.5" result="glow"/>
+          <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- Thermal beam -->
+      <path d="M190 85 L100 320 L300 320 L210 85" fill="url(#scBeamGrad)" class="scan-beam"/>
+
+      <!-- Scan sweep line -->
+      <line x1="120" y1="250" x2="280" y2="250" stroke="#D40074" stroke-width="1.5" stroke-dasharray="8 5" opacity="0.5" class="scan-sweep"/>
+
+      <!-- Solar panels at bottom -->
+      <g transform="translate(60, 270)">
+        <rect width="70" height="40" rx="2" fill="#12121e" stroke="rgba(212,0,116,0.15)" stroke-width="0.75"/>
+        <line x1="23" y1="0" x2="23" y2="40" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+        <line x1="46" y1="0" x2="46" y2="40" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+        <line x1="0" y1="13" x2="70" y2="13" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+        <line x1="0" y1="26" x2="70" y2="26" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+      </g>
+      <g transform="translate(140, 270)">
+        <rect width="70" height="40" rx="2" fill="#12121e" stroke="rgba(212,0,116,0.15)" stroke-width="0.75"/>
+        <line x1="23" y1="0" x2="23" y2="40" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+        <line x1="46" y1="0" x2="46" y2="40" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+        <line x1="0" y1="13" x2="70" y2="13" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+        <line x1="0" y1="26" x2="70" y2="26" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+        <!-- Hotspot on this panel -->
+        <circle cx="35" cy="20" r="6" fill="rgba(212,0,116,0.5)" class="defect-pulse"/>
+        <circle cx="35" cy="20" r="12" fill="none" stroke="rgba(212,0,116,0.3)" stroke-width="0.75" class="defect-ring"/>
+      </g>
+      <g transform="translate(220, 270)">
+        <rect width="70" height="40" rx="2" fill="#12121e" stroke="rgba(212,0,116,0.15)" stroke-width="0.75"/>
+        <line x1="23" y1="0" x2="23" y2="40" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+        <line x1="46" y1="0" x2="46" y2="40" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+        <line x1="0" y1="13" x2="70" y2="13" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+        <line x1="0" y1="26" x2="70" y2="26" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+      </g>
+
+      <!-- Drone (prominent) -->
+      <g class="drone-main" filter="url(#scGlow)">
+        <rect x="170" y="35" width="60" height="20" rx="10" fill="#1a1a2e" stroke="#D40074" stroke-width="1.5" stroke-opacity="0.7"/>
+        <line x1="170" y1="42" x2="110" y2="20" stroke="#2a2a3e" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="230" y1="42" x2="290" y2="20" stroke="#2a2a3e" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="178" y1="35" x2="128" y2="10" stroke="#2a2a3e" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="222" y1="35" x2="272" y2="10" stroke="#2a2a3e" stroke-width="2.5" stroke-linecap="round"/>
+
+        <!-- Motor hubs + rotors -->
+        <circle cx="110" cy="20" r="5" fill="#1a1a2e" stroke="#D40074" stroke-width="1" stroke-opacity="0.5"/>
+        <circle cx="290" cy="20" r="5" fill="#1a1a2e" stroke="#D40074" stroke-width="1" stroke-opacity="0.5"/>
+        <circle cx="128" cy="10" r="5" fill="#1a1a2e" stroke="#D40074" stroke-width="1" stroke-opacity="0.5"/>
+        <circle cx="272" cy="10" r="5" fill="#1a1a2e" stroke="#D40074" stroke-width="1" stroke-opacity="0.5"/>
+        <ellipse cx="110" cy="20" rx="28" ry="4" fill="rgba(212,0,116,0.1)" stroke="rgba(212,0,116,0.18)" stroke-width="0.5" class="rotor r1"/>
+        <ellipse cx="290" cy="20" rx="28" ry="4" fill="rgba(212,0,116,0.1)" stroke="rgba(212,0,116,0.18)" stroke-width="0.5" class="rotor r2"/>
+        <ellipse cx="128" cy="10" rx="28" ry="4" fill="rgba(212,0,116,0.1)" stroke="rgba(212,0,116,0.18)" stroke-width="0.5" class="rotor r3"/>
+        <ellipse cx="272" cy="10" rx="28" ry="4" fill="rgba(212,0,116,0.1)" stroke="rgba(212,0,116,0.18)" stroke-width="0.5" class="rotor r4"/>
+
+        <!-- Camera -->
+        <circle cx="200" cy="68" r="5" fill="#111" stroke="#D40074" stroke-width="1" stroke-opacity="0.6"/>
+        <circle cx="200" cy="68" r="2.5" fill="#D40074" opacity="0.7"/>
+
+        <!-- LEDs -->
+        <circle cx="178" cy="37" r="2" fill="#D40074" class="led"/>
+        <circle cx="222" cy="37" r="2" fill="#00ff88" class="led led-g"/>
+      </g>
+
+      <!-- Data readout overlay -->
+      <g opacity="0.6" class="data-readout">
+        <text x="320" y="90" fill="#D40074" font-size="10" font-family="var(--font-heading)" font-weight="600">THERMAL</text>
+        <text x="320" y="105" fill="rgba(255,255,255,0.4)" font-size="8" font-family="monospace">640×512 px</text>
+        <text x="320" y="118" fill="rgba(255,255,255,0.4)" font-size="8" font-family="monospace">0.050°C sens.</text>
+        <rect x="315" y="78" width="80" height="45" rx="3" fill="none" stroke="rgba(212,0,116,0.15)" stroke-width="0.5"/>
+      </g>
+    </svg>
+  </div>
+)}
+
+{variant === 'overhead' && (
+  <!-- Drone from above with propellers — for CTA section -->
+  <div class={`drone-overhead ${className}`}>
+    <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <filter id="ohGlow">
+          <feGaussianBlur stdDeviation="4" result="glow"/>
+          <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- Top-down drone view -->
+      <g filter="url(#ohGlow)">
+        <!-- Center body (top view) -->
+        <rect x="130" y="130" width="40" height="40" rx="8" fill="#1a1a2e" stroke="#D40074" stroke-width="1.5" stroke-opacity="0.5"/>
+
+        <!-- Arms (diagonal) -->
+        <line x1="135" y1="135" x2="75" y2="75" stroke="#2a2a3e" stroke-width="3" stroke-linecap="round"/>
+        <line x1="165" y1="135" x2="225" y2="75" stroke="#2a2a3e" stroke-width="3" stroke-linecap="round"/>
+        <line x1="135" y1="165" x2="75" y2="225" stroke="#2a2a3e" stroke-width="3" stroke-linecap="round"/>
+        <line x1="165" y1="165" x2="225" y2="225" stroke="#2a2a3e" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- Rotors (spinning circles) -->
+        <circle cx="75" cy="75" r="35" fill="rgba(212,0,116,0.06)" stroke="rgba(212,0,116,0.2)" stroke-width="1" class="rotor-circle rc1"/>
+        <circle cx="225" cy="75" r="35" fill="rgba(212,0,116,0.06)" stroke="rgba(212,0,116,0.2)" stroke-width="1" class="rotor-circle rc2"/>
+        <circle cx="75" cy="225" r="35" fill="rgba(212,0,116,0.06)" stroke="rgba(212,0,116,0.2)" stroke-width="1" class="rotor-circle rc3"/>
+        <circle cx="225" cy="225" r="35" fill="rgba(212,0,116,0.06)" stroke="rgba(212,0,116,0.2)" stroke-width="1" class="rotor-circle rc4"/>
+
+        <!-- Motor hubs -->
+        <circle cx="75" cy="75" r="6" fill="#1a1a2e" stroke="#D40074" stroke-width="1" stroke-opacity="0.5"/>
+        <circle cx="225" cy="75" r="6" fill="#1a1a2e" stroke="#D40074" stroke-width="1" stroke-opacity="0.5"/>
+        <circle cx="75" cy="225" r="6" fill="#1a1a2e" stroke="#D40074" stroke-width="1" stroke-opacity="0.5"/>
+        <circle cx="225" cy="225" r="6" fill="#1a1a2e" stroke="#D40074" stroke-width="1" stroke-opacity="0.5"/>
+
+        <!-- Camera (center) -->
+        <circle cx="150" cy="150" r="10" fill="#111" stroke="#D40074" stroke-width="1.5" stroke-opacity="0.6"/>
+        <circle cx="150" cy="150" r="5" fill="#D40074" opacity="0.5"/>
+
+        <!-- LEDs -->
+        <circle cx="135" cy="135" r="2.5" fill="#D40074" class="led"/>
+        <circle cx="165" cy="135" r="2.5" fill="#00ff88" class="led led-g"/>
+      </g>
+    </svg>
+  </div>
+)}
+
+{variant === 'panel-detail' && (
+  <!-- Single panel close-up with thermal view — for Services -->
+  <div class={`panel-detail ${className}`}>
+    <svg viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- Panel -->
+      <rect x="10" y="10" width="180" height="130" rx="4" fill="#12121e" stroke="rgba(212,0,116,0.2)" stroke-width="1"/>
+      <!-- Cell grid -->
+      <line x1="55" y1="10" x2="55" y2="140" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+      <line x1="100" y1="10" x2="100" y2="140" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+      <line x1="145" y1="10" x2="145" y2="140" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+      <line x1="10" y1="42" x2="190" y2="42" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+      <line x1="10" y1="75" x2="190" y2="75" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+      <line x1="10" y1="108" x2="190" y2="108" stroke="rgba(212,0,116,0.08)" stroke-width="0.5"/>
+      <!-- Thermal hotspots -->
+      <circle cx="78" cy="58" r="12" fill="rgba(212,0,116,0.2)" stroke="rgba(212,0,116,0.4)" stroke-width="1" class="defect-pulse"/>
+      <circle cx="78" cy="58" r="20" fill="none" stroke="rgba(212,0,116,0.15)" stroke-width="0.5" class="defect-ring"/>
+      <circle cx="145" cy="95" r="8" fill="rgba(255,100,0,0.25)" stroke="rgba(255,100,0,0.4)" stroke-width="1" class="defect-pulse defect-2"/>
+    </svg>
+  </div>
+)}
+
+<style>
+  /* --- Floating drone animation ------------------------------------------ */
+  .drone-scene-hero, .drone-scanning-scene {
+    animation: droneFloat 5s ease-in-out infinite;
+  }
+
+  .drone-overhead {
+    animation: droneRotateSlow 20s linear infinite;
+  }
+
+  @keyframes droneFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes droneRotateSlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* --- Rotor animation --------------------------------------------------- */
+  .rotor {
+    animation: rotorPulse 0.12s linear infinite;
+    transform-origin: center;
+  }
+  .r1 { animation-delay: 0s; }
+  .r2 { animation-delay: 0.03s; }
+  .r3 { animation-delay: 0.06s; }
+  .r4 { animation-delay: 0.09s; }
+
+  @keyframes rotorPulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 0.3; }
+  }
+
+  .rotor-circle {
+    animation: rotorCirclePulse 0.2s linear infinite;
+    transform-origin: center;
+  }
+  .rc1 { animation-delay: 0s; }
+  .rc2 { animation-delay: 0.05s; }
+  .rc3 { animation-delay: 0.1s; }
+  .rc4 { animation-delay: 0.15s; }
+
+  @keyframes rotorCirclePulse {
+    0%, 100% { opacity: 0.8; stroke-opacity: 0.3; }
+    50% { opacity: 0.4; stroke-opacity: 0.15; }
+  }
+
+  /* --- LED blink --------------------------------------------------------- */
+  .led {
+    animation: ledBlink 1.5s ease-in-out infinite;
+  }
+  .led-g {
+    animation-delay: 0.75s;
+  }
+
+  @keyframes ledBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.15; }
+  }
+
+  /* --- Scan effects ------------------------------------------------------ */
+  .scan-beam {
+    animation: beamPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes beamPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+  }
+
+  .scan-sweep {
+    animation: sweepMove 2.5s ease-in-out infinite;
+  }
+
+  @keyframes sweepMove {
+    0%, 100% { transform: translateY(0); opacity: 0.4; }
+    50% { transform: translateY(-20px); opacity: 0.8; }
+  }
+
+  /* --- Defect hotspot pulses --------------------------------------------- */
+  .defect-pulse {
+    animation: defectGlow 2s ease-in-out infinite;
+  }
+  .defect-pulse.defect-2 { animation-delay: 0.5s; }
+  .defect-pulse.defect-3 { animation-delay: 1s; }
+  .defect-pulse.defect-4 { animation-delay: 1.5s; }
+
+  @keyframes defectGlow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.9; }
+  }
+
+  .defect-ring {
+    animation: defectRingPulse 2s ease-in-out infinite;
+  }
+  .defect-ring.defect-2 { animation-delay: 0.5s; }
+  .defect-ring.defect-3 { animation-delay: 1s; }
+  .defect-ring.defect-4 { animation-delay: 1.5s; }
+
+  @keyframes defectRingPulse {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.3); opacity: 0; }
+  }
+
+  /* --- Data readout animation -------------------------------------------- */
+  .data-readout {
+    animation: readoutFade 4s ease-in-out infinite;
+  }
+
+  @keyframes readoutFade {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+  }
+</style>

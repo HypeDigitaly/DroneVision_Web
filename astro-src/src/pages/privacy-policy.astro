@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/sections/Footer.astro';
+import Container from '../components/ui/Container.astro';
+import siteData from '../utils/siteData';
+import type { Language } from '../types';
+
+export const prerender = false;
+
+if (!siteData.footer.legalPages.privacyPolicy) {
+  return Astro.redirect('/', 302);
+}
+
+const url = Astro.url;
+const langParam = url.searchParams.get('lang');
+
+if (langParam === 'cs') {
+  const clean = new URL(url);
+  clean.searchParams.delete('lang');
+  const redirectUrl = clean.pathname + clean.search;
+  return new Response(null, {
+    status: 302,
+    headers: {
+      'Location': redirectUrl,
+      'Set-Cookie': 'preferredLanguage=cs; Path=/; Max-Age=31536000; SameSite=Lax; Secure'
+    }
+  });
+}
+
+const cookieLang = Astro.cookies.get('preferredLanguage')?.value;
+const lang: Language = langParam === 'en' ? 'en' : cookieLang === 'en' ? 'en' : 'cs';
+
+if (langParam === 'en' || langParam === 'cs') {
+  Astro.cookies.set('preferredLanguage', langParam, { path: '/', maxAge: 31536000, sameSite: 'lax' });
+}
+
+const { company, contact } = siteData;
+const isEn = lang === 'en';
+const title = isEn ? 'Privacy Policy' : 'Zásady ochrany osobních údajů';
+---
+
+<BaseLayout title={title} lang={lang}>
+  <Header lang={lang} />
+  <main class="pt-20">
+    <Container>
+      <article class="py-20 max-w-3xl mx-auto prose prose-invert prose-p:text-white/70 prose-headings:text-white prose-a:text-primary">
+        <h1>{title}</h1>
+
+        {isEn ? (
+          <>
+            <p>This privacy policy describes how <strong>{company.name}</strong> ("{company.name}", "we", "our") processes your personal data when you use our website or contact us.</p>
+            <h2>1. Who is the controller?</h2>
+            <p>{company.name}, IČO {company.ico}, {company.address}, {company.zipCode} {company.city}, {company.country}. Contact: <a href={`mailto:${contact.email}`}>{contact.email}</a></p>
+            <h2>2. What data we collect</h2>
+            <p>We collect data you provide voluntarily via our contact or lead forms: name, email address, phone number, and any message text. We may also collect technical data such as IP address, browser type, and pages visited via cookies and analytics tools.</p>
+            <h2>3. How we use your data</h2>
+            <p>We use your data to respond to your enquiries, provide our services, and — where you have consented — to send you marketing communications. We do not sell your data to third parties.</p>
+            <h2>4. Cookies</h2>
+            <p>Our site uses essential cookies required for functionality (e.g. language preference) and, with your consent, analytical cookies (Google Analytics). You can withdraw consent at any time by clearing your browser cookies.</p>
+            <h2>5. Your rights</h2>
+            <p>Under GDPR you have the right to access, correct, delete, or restrict processing of your personal data. Contact us at <a href={`mailto:${contact.email}`}>{contact.email}</a> to exercise your rights.</p>
+            <h2>6. Contact</h2>
+            <p>{contact.email} &middot; {contact.phone}</p>
+          </>
+        ) : (
+          <>
+            <p>Tyto zásady ochrany osobních údajů popisují, jak <strong>{company.name}</strong> zpracovává vaše osobní údaje při návštěvě webu nebo kontaktování nás.</p>
+            <h2>1. Správce osobních údajů</h2>
+            <p>{company.name}, IČO {company.ico}, {company.address}, {company.zipCode} {company.city}, {company.country}. Kontakt: <a href={`mailto:${contact.email}`}>{contact.email}</a></p>
+            <h2>2. Jaké údaje shromažďujeme</h2>
+            <p>Shromažďujeme údaje, které nám dobrovolně poskytnete prostřednictvím kontaktního nebo leadového formuláře: jméno, e-mailová adresa, telefon a text zprávy. Automaticky zpracováváme technické údaje jako IP adresa, typ prohlížeče a navštívené stránky prostřednictvím cookies a analytických nástrojů.</p>
+            <h2>3. K čemu údaje používáme</h2>
+            <p>Údaje používáme k odpovědi na vaše dotazy, poskytování služeb a — kde jste udělili souhlas — k zasílání obchodních sdělení. Vaše data neprodáváme třetím stranám.</p>
+            <h2>4. Cookies</h2>
+            <p>Web používá nezbytné cookies (např. preference jazyka) a po vašem souhlasu analytické cookies (Google Analytics). Souhlas lze kdykoli odvolat vymazáním cookies v prohlížeči.</p>
+            <h2>5. Vaše práva</h2>
+            <p>Podle GDPR máte právo na přístup, opravu, výmaz nebo omezení zpracování osobních údajů. Obraťte se na <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
+            <h2>6. Kontakt</h2>
+            <p>{contact.email} &middot; {contact.phone}</p>
+          </>
+        )}
+      </article>
+    </Container>
+  </main>
+  <Footer lang={lang} />
+</BaseLayout>

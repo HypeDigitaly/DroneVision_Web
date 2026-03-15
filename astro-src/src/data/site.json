@@ -1,0 +1,565 @@
+{
+  "meta": {
+    "name": "DroneVision",
+    "tagline_cs": "Inspekce FVE dronem s termovizí",
+    "tagline_en": "Drone-Based Solar Panel Thermal Inspection",
+    "description_cs": "Profesionální inspekce fotovoltaických elektráren dronem s termokamerou. Odhalíme skryté závady, hot-spoty a ztráty výkonu vaší FVE v Teplicích a po celé ČR.",
+    "description_en": "Professional drone-based thermal inspection of solar power plants. We detect hidden defects, hot-spots and performance losses across Czech Republic.",
+    "siteUrl": "https://drone-vision.cz",
+    "logo": "/images/logo.svg",
+    "ogImage": "/images/og-image.png",
+    "favicon": "/images/favicon.ico",
+    "lang": "cs",
+    "alternateLanguages": ["en"],
+    "gaId": "G-XXXXXXXXXX"
+  },
+
+  "company": {
+    "name": "DRONE VISION, s.r.o.",
+    "ico": "04618653",
+    "dic": "CZ04618653",
+    "address": "Revoluční 658/8",
+    "zipCode": "415 01",
+    "city": "Teplice",
+    "country": "Česká republika"
+  },
+
+  "geoCoordinates": {
+    "latitude": 50.6377,
+    "longitude": 13.8253
+  },
+
+  "contact": {
+    "email": "info@drone-vision.cz",
+    "phone": "+420 603 445 089",
+    "formNotificationEmails": [
+      "info@drone-vision.cz"
+    ]
+  },
+
+  "social": {
+    "facebook": "https://www.facebook.com/profile.php?id=61562713836129",
+    "linkedin": "",
+    "twitter": "",
+    "instagram": ""
+  },
+
+  "hero": {
+    "headline_cs": "Vaše solární elektrárna vyrábí méně, než by měla. Každý den.",
+    "headline_en": "Your Solar Plant Produces Less Than It Should. Every Day.",
+    "subheadline_cs": "Zjistěte za 60 sekund, kolik kilowatthodin — a korun — vám každý rok unikají bez inspekce dronem.",
+    "subheadline_en": "Find out in 60 seconds how many kilowatt-hours — and crowns — you lose every year without a drone inspection.",
+    "eyebrow_cs": "Víte, kolik vás stojí nečinnost?",
+    "eyebrow_en": "Do you know what inaction costs you?",
+    "backgroundImage": "/images/hero-bg.webp"
+  },
+
+  "problem": {
+    "enabled": true,
+    "headline_cs": "Proč ztrácíte výkon?",
+    "headline_en": "Why Are You Losing Power?",
+    "items": [
+      {
+        "icon": "chart-down",
+        "title_cs": "Degradace panelů",
+        "title_en": "Panel Degradation",
+        "description_cs": "Starší panely ztrácejí výkon překvapivě rychle. Panely z let 2008–2014 vykazují průměrné ztráty až 30 %, modely z let 2015–2019 ztrácejí kolem 16 % a moderní panely z roku 2020 a novější přibližně 8 %. Bez pravidelné inspekce tyto ztráty zůstávají skryté.",
+        "description_en": "Older panels lose performance at a surprisingly fast rate. Panels from 2008–2014 show average losses of up to 30%, models from 2015–2019 lose around 16%, and modern panels from 2020 onwards approximately 8%. Without regular inspection, these losses remain hidden."
+      },
+      {
+        "icon": "lightning",
+        "title_cs": "Hot-spoty a přehřívání",
+        "title_en": "Hot Spots and Overheating",
+        "description_cs": "Hot-spoty jsou místa s abnormálně vysokou teplotou na povrchu panelu. Způsobují nevratné poškození buněk, snižují celkový výkon a v krajním případě představují vážné riziko požáru celého solárního systému.",
+        "description_en": "Hot spots are areas of abnormally high temperature on the panel surface. They cause irreversible cell damage, reduce overall output, and in extreme cases pose a serious fire risk to the entire solar system."
+      },
+      {
+        "icon": "search",
+        "title_cs": "Skryté mechanické poškození",
+        "title_en": "Hidden Mechanical Damage",
+        "description_cs": "Mikrotrhlinky ve fotovoltaických článcích jsou ze země zcela neviditelné a standardní vizuální kontrola je neodhalí. Přesto mohou snížit výkon panelu o desítky procent a postupně se dále rozrůstat, dokud panel zcela neselhá.",
+        "description_en": "Micro-cracks in photovoltaic cells are completely invisible from the ground and cannot be detected by standard visual inspection. Yet they can reduce panel output by tens of percent and continue to spread until the panel fails entirely."
+      },
+      {
+        "icon": "target",
+        "title_cs": "Znečištění a nečistoty",
+        "title_en": "Soiling and Contamination",
+        "description_cs": "Prach, ptačí trus a jiné nečistoty mohou způsobit ztrátu výkonu o 2–5 % ročně. Termální kamera přesně identifikuje postižené panely a umožňuje cílenou údržbu místo plošného čištění celé elektrárny.",
+        "description_en": "Dust, bird droppings, and other contaminants can cause a 2–5% annual output loss. Thermal imaging precisely identifies affected panels and enables targeted maintenance instead of cleaning the entire plant indiscriminately."
+      }
+    ]
+  },
+
+  "solution": {
+    "enabled": true,
+    "headline_cs": "Inspekce dronem s termovizí",
+    "headline_en": "Drone Inspection with Thermal Imaging",
+    "description_cs": "Používáme profesionální dron DJI Matrice 210 RTK-G osazený termokamerou Zenmuse XT s rozlišením 640×512 pixelů a citlivostí detektoru 0,050 °C. Tato kombinace nám umožňuje odhalit teplotní anomálie s přesností, které tradiční metody nedosáhnou — a to na celé elektrárně během jediného letu.",
+    "description_en": "We use a professional DJI Matrice 210 RTK-G drone equipped with a Zenmuse XT thermal camera offering 640×512 pixel resolution and detector sensitivity of 0.050 °C. This combination allows us to detect thermal anomalies with a precision that traditional methods cannot match — across the entire plant in a single flight.",
+    "features": [
+      {
+        "icon": "lightning",
+        "title_cs": "Termální detekce",
+        "title_en": "Thermal Detection",
+        "description_cs": "Termokamera Zenmuse XT detekuje teplotní rozdíly od 0,050 °C. Odhalíme hot-spoty, vadné bypass diody, poškozené články i nerovnoměrné zastínění — vše v reálném čase přímo nad elektrárnou.",
+        "description_en": "The Zenmuse XT thermal camera detects temperature differences from 0.050 °C. We identify hot spots, faulty bypass diodes, damaged cells, and uneven shading — all in real time directly above the plant."
+      },
+      {
+        "icon": "globe",
+        "title_cs": "Platforma DroneSoft",
+        "title_en": "DroneSoft Platform",
+        "description_cs": "Inovativní webová platforma DroneSoft poskytuje přístup k ortofoto plánům a 3D modelům vaší elektrárny. Závady jsou přesně zaznačeny v interaktivním fotoplánu, který lze sdílet s partnery a archivovat pro budoucí srovnání.",
+        "description_en": "The innovative DroneSoft web platform provides access to orthophoto plans and 3D models of your plant. Defects are precisely marked in an interactive photoplan that can be shared with partners and archived for future comparison."
+      },
+      {
+        "icon": "document",
+        "title_cs": "Profesionální report",
+        "title_en": "Professional Report",
+        "description_cs": "Po každé inspekci obdržíte podrobný technický report se snímky ze standardní i termální kamery, popisem a klasifikací nalezených závad, odhadem výkonových ztrát a doporučeními pro servisní zásah.",
+        "description_en": "After every inspection you receive a detailed technical report including images from both standard and thermal cameras, a description and classification of defects found, an estimate of performance losses, and recommendations for service intervention."
+      },
+      {
+        "icon": "check",
+        "title_cs": "Certifikace ÚCL",
+        "title_en": "CAA Certification",
+        "description_cs": "Naši piloti a bezpilotní prostředky jsou řádně registrováni u Úřadu civilního letectví (ÚCL). Inspekce provádí certifikovaný specialista termografie Kategorie I, takže výsledky jsou plně uznávány pro pojistné a servisní účely.",
+        "description_en": "Our pilots and unmanned aircraft are duly registered with the Civil Aviation Authority (CAA). Inspections are carried out by a certified Category I thermography specialist, meaning results are fully recognised for insurance and service purposes."
+      }
+    ]
+  },
+
+  "services": {
+    "enabled": true,
+    "headline_cs": "Naše služby",
+    "headline_en": "Our Services",
+    "items": [
+      {
+        "icon": "lightning",
+        "title_cs": "Inspekce FVE",
+        "title_en": "Solar Plant Inspection",
+        "description_cs": "Komplexní termální inspekce fotovoltaické elektrárny dronem. Odhalíme hot-spoty, mikrotrhlinky, vadné diody i znečištěné panely — a vše přehledně zaznačíme v interaktivním fotoplánu na platformě DroneSoft.",
+        "description_en": "Comprehensive thermal drone inspection of your solar power plant. We detect hot spots, micro-cracks, faulty diodes, and soiled panels — and map everything clearly in an interactive photoplan on the DroneSoft platform.",
+        "features": [
+          { "text_cs": "Kontrola dronem s termokamerou", "text_en": "Drone inspection with thermal camera" },
+          { "text_cs": "Vytvoření fotoplánu elektrárny", "text_en": "Plant photoplan creation" },
+          { "text_cs": "Vyznačení závad ve fotoplánu", "text_en": "Defect marking in photoplan" },
+          { "text_cs": "Doprava do 100 km", "text_en": "Transport up to 100 km" },
+          { "text_cs": "Přístup do aplikace DroneSoft", "text_en": "DroneSoft app access" }
+        ]
+      },
+      {
+        "icon": "search",
+        "title_cs": "Průmyslové inspekce",
+        "title_en": "Industrial Inspections",
+        "description_cs": "Termální inspekce průmyslových objektů, střech a fasád. Odhalíme poškození střešní krytiny, defekty izolace a tepelné mosty — vše bez nutnosti lešení nebo přímého přístupu.",
+        "description_en": "Thermal inspection of industrial buildings, roofs, and facades. We detect roof membrane damage, insulation defects, and thermal bridges — all without the need for scaffolding or direct access.",
+        "features": [
+          { "text_cs": "Kontrola střech a izolací", "text_en": "Roof and insulation inspection" },
+          { "text_cs": "Detekce tepelných mostů", "text_en": "Thermal bridge detection" },
+          { "text_cs": "Pasportizace areálů", "text_en": "Site condition surveying" },
+          { "text_cs": "Fotoplány fasád a střech", "text_en": "Facade and roof photoplans" }
+        ]
+      },
+      {
+        "icon": "globe",
+        "title_cs": "DroneSoft platforma",
+        "title_en": "DroneSoft Platform",
+        "description_cs": "Webová platforma DroneSoft umožňuje prohlížení 2D ortofoto plánů a 3D modelů, měření ploch a objemů, sdílení dat se servisními partnery a dlouhodobou archivaci stavů objektů.",
+        "description_en": "The DroneSoft web platform enables viewing of 2D orthophoto plans and 3D models, measurement of areas and volumes, data sharing with service partners, and long-term archiving of asset conditions.",
+        "features": [
+          { "text_cs": "Ortofoto plány a 3D modely", "text_en": "Orthophoto plans and 3D models" },
+          { "text_cs": "Měření ploch a objemů", "text_en": "Area and volume measurements" },
+          { "text_cs": "Sdílení dat s partnery", "text_en": "Data sharing with partners" },
+          { "text_cs": "Archivace stavů", "text_en": "Asset condition archiving" }
+        ]
+      }
+    ]
+  },
+
+  "process": {
+    "enabled": true,
+    "headline_cs": "Jak to funguje",
+    "headline_en": "How It Works",
+    "steps": [
+      {
+        "number": 1,
+        "icon": "calendar",
+        "title_cs": "Objednávka",
+        "title_en": "Order",
+        "description_cs": "Kontaktujte nás telefonicky nebo e-mailem. Společně naplánujeme termín inspekce s ohledem na počasí, dostupnost lokality a váš provozní harmonogram.",
+        "description_en": "Contact us by phone or email. Together we will plan the inspection date taking into account weather conditions, site accessibility, and your operational schedule."
+      },
+      {
+        "number": 2,
+        "icon": "target",
+        "title_cs": "Inspekce dronem",
+        "title_en": "Drone Inspection",
+        "description_cs": "Náš pilot přilétá s dronem DJI Matrice 210 RTK-G vybaveným termokamerou Zenmuse XT. Systematicky přelétáme celou plochu elektrárny a pořizujeme termální i RGB snímky každého panelu.",
+        "description_en": "Our pilot arrives with the DJI Matrice 210 RTK-G drone equipped with the Zenmuse XT thermal camera. We systematically cover the entire plant area and capture thermal and RGB images of every panel."
+      },
+      {
+        "number": 3,
+        "icon": "chart",
+        "title_cs": "Analýza dat",
+        "title_en": "Data Analysis",
+        "description_cs": "Po letu zpracujeme termální snímky, identifikujeme teplotní anomálie a klasifikujeme závady podle závažnosti. Všechny nálezy jsou přesně geolokalizovány v fotoplánu elektrárny.",
+        "description_en": "After the flight we process the thermal images, identify temperature anomalies, and classify defects by severity. All findings are precisely geolocated within the plant photoplan."
+      },
+      {
+        "number": 4,
+        "icon": "document",
+        "title_cs": "Report + DroneSoft",
+        "title_en": "Report + DroneSoft",
+        "description_cs": "Obdržíte podrobný technický report s popisem a fotografiemi všech závad a přístup do platformy DroneSoft, kde máte elektrárnu vizualizovanou v interaktivním fotoplánu dostupném kdykoliv online.",
+        "description_en": "You receive a detailed technical report describing and illustrating all defects, plus access to the DroneSoft platform where your plant is visualised in an interactive photoplan accessible online at any time."
+      }
+    ]
+  },
+
+  "stats": {
+    "enabled": true,
+    "items": [
+      {
+        "value": "2015",
+        "label_cs": "Na trhu od roku",
+        "label_en": "In business since"
+      },
+      {
+        "value": "640×512",
+        "label_cs": "Rozlišení termokamery",
+        "label_en": "Thermal camera resolution"
+      },
+      {
+        "value": "0,050°C",
+        "label_cs": "Citlivost detektoru",
+        "label_en": "Detector sensitivity"
+      },
+      {
+        "value": "ÚCL",
+        "label_cs": "Certifikace",
+        "label_en": "Certified by"
+      }
+    ]
+  },
+
+  "testimonials": {
+    "enabled": false,
+    "headline_cs": "",
+    "headline_en": "",
+    "items": []
+  },
+
+  "pricing": {
+    "enabled": true,
+    "headline_cs": "Ceník inspekce FVE",
+    "headline_en": "Solar Inspection Pricing",
+    "tiers": [
+      {
+        "name_cs": "do 100 kWp",
+        "name_en": "up to 100 kWp",
+        "price": "14690",
+        "currency": "Kč",
+        "period_cs": "jednorázově",
+        "period_en": "one-time",
+        "description_cs": "Ideální pro menší rodinné nebo komerční fotovoltaické elektrárny do 100 kWp instalovaného výkonu.",
+        "description_en": "Ideal for smaller residential or commercial solar power plants up to 100 kWp of installed capacity.",
+        "features": [
+          { "text_cs": "Kontrola dronem s termokamerou", "text_en": "Drone inspection with thermal camera", "included": true },
+          { "text_cs": "Vytvoření fotoplánu", "text_en": "Plant photoplan creation", "included": true },
+          { "text_cs": "Vyznačení závad", "text_en": "Defect marking in photoplan", "included": true },
+          { "text_cs": "Doprava do 100 km", "text_en": "Transport up to 100 km", "included": true },
+          { "text_cs": "Přístup do DroneSoft", "text_en": "DroneSoft platform access", "included": true }
+        ],
+        "cta": {
+          "text_cs": "Kontaktujte nás",
+          "text_en": "Contact Us",
+          "href": "#kontakt"
+        },
+        "highlighted": false
+      },
+      {
+        "name_cs": "do 250 kWp",
+        "name_en": "up to 250 kWp",
+        "price": "19490",
+        "currency": "Kč",
+        "period_cs": "jednorázově",
+        "period_en": "one-time",
+        "description_cs": "Vhodné pro střední fotovoltaické elektrárny s instalovaným výkonem do 250 kWp.",
+        "description_en": "Suitable for medium-sized solar power plants with installed capacity up to 250 kWp.",
+        "features": [
+          { "text_cs": "Kontrola dronem s termokamerou", "text_en": "Drone inspection with thermal camera", "included": true },
+          { "text_cs": "Vytvoření fotoplánu", "text_en": "Plant photoplan creation", "included": true },
+          { "text_cs": "Vyznačení závad", "text_en": "Defect marking in photoplan", "included": true },
+          { "text_cs": "Doprava do 100 km", "text_en": "Transport up to 100 km", "included": true },
+          { "text_cs": "Přístup do DroneSoft", "text_en": "DroneSoft platform access", "included": true }
+        ],
+        "cta": {
+          "text_cs": "Kontaktujte nás",
+          "text_en": "Contact Us",
+          "href": "#kontakt"
+        },
+        "highlighted": false
+      },
+      {
+        "name_cs": "do 500 kWp",
+        "name_en": "up to 500 kWp",
+        "price": "24290",
+        "currency": "Kč",
+        "period_cs": "jednorázově",
+        "period_en": "one-time",
+        "description_cs": "Nejpopulárnější volba pro velké komerční elektrárny s výkonem do 500 kWp. Optimální poměr ceny a rozsahu inspekce.",
+        "description_en": "The most popular choice for large commercial plants up to 500 kWp. The optimal price-to-coverage ratio for a thorough inspection.",
+        "features": [
+          { "text_cs": "Kontrola dronem s termokamerou", "text_en": "Drone inspection with thermal camera", "included": true },
+          { "text_cs": "Vytvoření fotoplánu", "text_en": "Plant photoplan creation", "included": true },
+          { "text_cs": "Vyznačení závad", "text_en": "Defect marking in photoplan", "included": true },
+          { "text_cs": "Doprava do 100 km", "text_en": "Transport up to 100 km", "included": true },
+          { "text_cs": "Přístup do DroneSoft", "text_en": "DroneSoft platform access", "included": true }
+        ],
+        "cta": {
+          "text_cs": "Kontaktujte nás",
+          "text_en": "Contact Us",
+          "href": "#kontakt"
+        },
+        "highlighted": true
+      },
+      {
+        "name_cs": "do 750 kWp",
+        "name_en": "up to 750 kWp",
+        "price": "26690",
+        "currency": "Kč",
+        "period_cs": "jednorázově",
+        "period_en": "one-time",
+        "description_cs": "Pro rozsáhlé solární parky s instalovaným výkonem do 750 kWp. Kompletní inspekce s podrobnou dokumentací.",
+        "description_en": "For large solar parks with installed capacity up to 750 kWp. Complete inspection with comprehensive documentation.",
+        "features": [
+          { "text_cs": "Kontrola dronem s termokamerou", "text_en": "Drone inspection with thermal camera", "included": true },
+          { "text_cs": "Vytvoření fotoplánu", "text_en": "Plant photoplan creation", "included": true },
+          { "text_cs": "Vyznačení závad", "text_en": "Defect marking in photoplan", "included": true },
+          { "text_cs": "Doprava do 100 km", "text_en": "Transport up to 100 km", "included": true },
+          { "text_cs": "Přístup do DroneSoft", "text_en": "DroneSoft platform access", "included": true }
+        ],
+        "cta": {
+          "text_cs": "Kontaktujte nás",
+          "text_en": "Contact Us",
+          "href": "#kontakt"
+        },
+        "highlighted": false
+      },
+      {
+        "name_cs": "do 1 MWp",
+        "name_en": "up to 1 MWp",
+        "price": "29090",
+        "currency": "Kč",
+        "period_cs": "jednorázově",
+        "period_en": "one-time",
+        "description_cs": "Komplexní řešení pro velké průmyslové solární elektrárny s výkonem až 1 MWp. Maximální pokrytí a nejpodrobnější analýza.",
+        "description_en": "Comprehensive solution for large industrial solar plants up to 1 MWp. Maximum coverage and the most detailed analysis available.",
+        "features": [
+          { "text_cs": "Kontrola dronem s termokamerou", "text_en": "Drone inspection with thermal camera", "included": true },
+          { "text_cs": "Vytvoření fotoplánu", "text_en": "Plant photoplan creation", "included": true },
+          { "text_cs": "Vyznačení závad", "text_en": "Defect marking in photoplan", "included": true },
+          { "text_cs": "Doprava do 100 km", "text_en": "Transport up to 100 km", "included": true },
+          { "text_cs": "Přístup do DroneSoft", "text_en": "DroneSoft platform access", "included": true }
+        ],
+        "cta": {
+          "text_cs": "Kontaktujte nás",
+          "text_en": "Contact Us",
+          "href": "#kontakt"
+        },
+        "highlighted": false
+      }
+    ]
+  },
+
+  "faq": {
+    "enabled": true,
+    "headline_cs": "Často kladené dotazy",
+    "headline_en": "Frequently Asked Questions",
+    "items": [
+      {
+        "question_cs": "Jak termální inspekce dronem funguje?",
+        "question_en": "How does the thermal drone inspection work?",
+        "answer_cs": "Dron DJI Matrice 210 RTK-G s termokamerou Zenmuse XT systematicky přelétá celou plochu elektrárny ve výšce přibližně 30–50 metrů. Termokamera zaznamenává teplotní rozdíly na povrchu panelů s přesností 0,050 °C. Snímky jsou následně zpracovány a závady přesně zaznačeny v interaktivním fotoplánu na platformě DroneSoft.",
+        "answer_en": "The DJI Matrice 210 RTK-G drone with the Zenmuse XT thermal camera systematically covers the entire plant area at approximately 30–50 metres altitude. The thermal camera records temperature differences on panel surfaces with 0.050 °C precision. Images are then processed and defects precisely marked in an interactive photoplan on the DroneSoft platform."
+      },
+      {
+        "question_cs": "Kdy je nejlepší čas pro inspekci?",
+        "question_en": "When is the best time for inspection?",
+        "answer_cs": "Optimální podmínky nastávají za slunečného počasí s intenzitou záření nad 600 W/m². Nejlépe v dopoledních nebo odpoledních hodinách, kdy je rozdíl teplot mezi vadnými a funkčními panely největší. Inspekce neprovádíme za deště, silného větru nebo při teplotách pod bodem mrazu.",
+        "answer_en": "Optimal conditions occur in sunny weather with irradiance above 600 W/m². Morning or afternoon hours are ideal, when the temperature difference between faulty and functional panels is greatest. We do not carry out inspections in rain, strong wind, or temperatures below freezing."
+      },
+      {
+        "question_cs": "Jaké vybavení používáte?",
+        "question_en": "What equipment do you use?",
+        "answer_cs": "Používáme profesionální dron DJI Matrice 210 RTK-G s dvojitou kamerou — termokamerou Zenmuse XT (640×512 px, citlivost 0,050 °C) a standardní RGB kamerou pro kontextové snímky. Veškeré vybavení splňuje požadavky ÚCL a je pravidelně kalibrováno.",
+        "answer_en": "We use the professional DJI Matrice 210 RTK-G drone with a dual camera payload — the Zenmuse XT thermal camera (640×512 px, sensitivity 0.050 °C) and a standard RGB camera for contextual images. All equipment meets CAA requirements and is regularly calibrated."
+      },
+      {
+        "question_cs": "Jak dlouho inspekce trvá?",
+        "question_en": "How long does the inspection take?",
+        "answer_cs": "Délka inspekce závisí na velikosti elektrárny. Elektrárny do 100 kWp zvládneme obvykle za 2–3 hodiny včetně přípravy a závěrečné dokumentace. Větší instalace mohou trvat celý pracovní den. Přesný časový odhad poskytneme po obdržení parametrů vaší elektrárny.",
+        "answer_en": "The duration depends on the size of the plant. Plants up to 100 kWp can usually be completed in 2–3 hours including preparation and final documentation. Larger installations may take a full working day. We will provide an accurate time estimate once we receive your plant's specifications."
+      },
+      {
+        "question_cs": "Co obdržím po inspekci?",
+        "question_en": "What do I receive after the inspection?",
+        "answer_cs": "Po inspekci obdržíte podrobný technický report ve formátu PDF se snímky ze standardní i termální kamery, popisem a klasifikací každé závady, odhadem výkonových ztrát a konkrétními doporučeními pro servis. Zároveň získáte přístup do platformy DroneSoft s interaktivním fotoplánem elektrárny, kde jsou všechny závady přesně geolokalizovány.",
+        "answer_en": "After the inspection you receive a detailed technical report in PDF format containing images from both standard and thermal cameras, a description and classification of every defect, an estimate of performance losses, and specific service recommendations. You also gain access to the DroneSoft platform with an interactive photoplan of your plant, where all defects are precisely geolocated."
+      },
+      {
+        "question_cs": "Jaké počasí je potřeba pro inspekci?",
+        "question_en": "What weather conditions are required?",
+        "answer_cs": "Pro kvalitní termální inspekci potřebujeme jasné nebo polojasné počasí s minimální intenzitou slunečního záření 600 W/m², rychlostí větru do 10 m/s a teplotou vzduchu nad 5 °C. Při nevhodném počasí termín přeplánujeme bez storno poplatků. Sledujeme předpověď a termín vždy potvrdíme den předem.",
+        "answer_en": "For a quality thermal inspection we need clear or partly cloudy weather with minimum solar irradiance of 600 W/m², wind speed below 10 m/s, and air temperature above 5 °C. In unsuitable weather we reschedule at no cancellation cost. We monitor the forecast and always confirm the date one day in advance."
+      }
+    ]
+  },
+
+  "cta": {
+    "enabled": true,
+    "headline_cs": "Zjistěte stav vaší elektrárny",
+    "headline_en": "Find Out Your Plant's Condition",
+    "subheadline_cs": "Objednejte si inspekci a zjistěte, kolik energie zbytečně ztrácíte.",
+    "subheadline_en": "Schedule an inspection and find out how much energy you're losing unnecessarily.",
+    "buttonText_cs": "Kontaktujte nás",
+    "buttonText_en": "Contact Us",
+    "buttonHref": "#kontakt"
+  },
+
+  "blog": {
+    "enabled": false,
+    "postsPerPage": 12,
+    "categories": []
+  },
+
+  "leadMagnet": {
+    "enabled": false,
+    "title_cs": "",
+    "title_en": "",
+    "description_cs": "",
+    "description_en": "",
+    "pdfUrl": "",
+    "formFields": []
+  },
+
+  "quiz": {
+    "enabled": true,
+    "step1_title_cs": "Jaký je výkon vaší FVE?",
+    "step1_title_en": "What is your solar plant capacity?",
+    "step1_unit": "kWp",
+    "step1_manual_label_cs": "nebo zadejte přesnou hodnotu",
+    "step1_manual_label_en": "or enter exact value",
+    "step2_title_cs": "Rok výroby panelů?",
+    "step2_title_en": "Panel manufacture year?",
+    "step2_option1": "2008–2014",
+    "step2_option1_label_cs": "Starší panely",
+    "step2_option1_label_en": "Older panels",
+    "step2_option2": "2015–2019",
+    "step2_option2_label_cs": "Středně staré",
+    "step2_option2_label_en": "Mid-age panels",
+    "step2_option3": "2020+",
+    "step2_option3_label_cs": "Moderní panely",
+    "step2_option3_label_en": "Modern panels",
+    "step3_prefix_cs": "Přicházíte ročně o",
+    "step3_prefix_en": "You are losing annually",
+    "step3_suffix": "Kč",
+    "step3_days_cs": "To je {days} dní zbytečných ztrát",
+    "step3_days_en": "That's {days} days of unnecessary losses",
+    "step3_cta_cs": "Chci omezit ztráty",
+    "step3_cta_en": "I want to reduce losses",
+    "step4_title_cs": "Plánujete rozšířit elektrárnu?",
+    "step4_title_en": "Are you planning to expand your plant?",
+    "step4_yes_cs": "Ano, plánuji",
+    "step4_yes_en": "Yes, planning to",
+    "step4_no_cs": "Ne, momentálně ne",
+    "step4_no_en": "No, not currently",
+    "step5_title_cs": "Pošleme vám zprávu s vaším výsledkem",
+    "step5_title_en": "We'll send you your result",
+    "step5_name_cs": "Jméno a příjmení",
+    "step5_name_en": "Full name",
+    "step5_email_cs": "E-mail",
+    "step5_email_en": "Email",
+    "step5_phone_cs": "Telefon",
+    "step5_phone_en": "Phone",
+    "step5_gdpr_cs": "Souhlasím se zpracováním osobních údajů dle zásad ochrany soukromí.",
+    "step5_gdpr_en": "I agree to the processing of personal data per the privacy policy.",
+    "step5_submit_cs": "Odeslat a zobrazit ztráty",
+    "step5_submit_en": "Submit and see losses",
+    "step5_sending_cs": "Odesílám...",
+    "step5_sending_en": "Sending...",
+    "step6_title_cs": "Hotovo. Výsledek dorazí do pár minut.",
+    "step6_title_en": "Done. Result arrives in minutes.",
+    "step6_subtitle_cs": "Mezitím nás můžete rovnou zavolat:",
+    "step6_subtitle_en": "Meanwhile, you can call us directly:",
+    "step6_phone": "+420 603 445 089",
+    "continue_cs": "Pokračovat",
+    "continue_en": "Continue",
+    "back_cs": "Zpět",
+    "back_en": "Back",
+    "error_required_cs": "Toto pole je povinné",
+    "error_required_en": "This field is required",
+    "error_email_cs": "Neplatný formát e-mailu",
+    "error_email_en": "Invalid email format",
+    "error_phone_cs": "Neplatný formát telefonu",
+    "error_phone_en": "Invalid phone format",
+    "error_capacity_cs": "Zadejte platný výkon v kWp",
+    "error_capacity_en": "Enter a valid capacity in kWp",
+    "error_submit_cs": "Nepodařilo se odeslat. Zkuste to znovu.",
+    "error_submit_en": "Submission failed. Please try again."
+  },
+
+  "admin": {
+    "notificationEmails": [
+      "info@drone-vision.cz"
+    ],
+    "enabledModules": {
+      "leads": true,
+      "newsletter": false,
+      "blogComments": false
+    }
+  },
+
+  "footer": {
+    "copyright_cs": "© 2015 – {year} Drone Vision",
+    "copyright_en": "© 2015 – {year} Drone Vision",
+    "certificate_cs": "Piloti a bezpilotní prostředky společnosti DRONE VISION jsou řádně registrováni Úřadem civilního letectví. Jsme držiteli platného povolení k létání a k provádění leteckých prací.",
+    "certificate_en": "DRONE VISION pilots and unmanned aircraft are duly registered with the Civil Aviation Authority. We hold valid permissions for flying and conducting aerial work.",
+    "links": [
+      {
+        "label_cs": "Ochrana soukromí",
+        "label_en": "Privacy Policy",
+        "href": "/privacy-policy"
+      },
+      {
+        "label_cs": "Obchodní podmínky",
+        "label_en": "Terms of Service",
+        "href": "/terms-of-service"
+      }
+    ],
+    "legalPages": {
+      "privacyPolicy": true,
+      "termsOfService": true,
+      "cookiePolicy": true
+    }
+  },
+
+  "branding": {
+    "colors": {
+      "primary": "#D40074",
+      "secondary": "#0a0a0a",
+      "accent": "#9F0057",
+      "background": "#000000",
+      "text": "#FFFFFF",
+      "border": "rgba(255,255,255,0.05)"
+    },
+    "fonts": {
+      "heading": "Inter",
+      "body": "Inter"
+    },
+    "spacing": {
+      "unit": "1rem"
+    },
+    "borderRadius": "12px"
+  }
+}

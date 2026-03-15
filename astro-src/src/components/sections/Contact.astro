@@ -1,0 +1,167 @@
+---
+import siteData from '../../utils/siteData';
+import { getLocalizedHref } from '../../utils/i18n';
+import type { Language } from '../../types';
+import Button from '../ui/Button.astro';
+import Input from '../ui/Input.astro';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = 'cs' } = Astro.props;
+const contact = siteData.contact;
+const company = siteData.company;
+
+const labels = {
+  sectionNum: '07',
+  heading:      lang === 'en' ? 'Contact Us'             : 'Kontaktujte nás',
+  email:        lang === 'en' ? 'Email'                  : 'E-mail',
+  phone:        lang === 'en' ? 'Phone'                  : 'Telefon',
+  address:      lang === 'en' ? 'Address'                : 'Adresa',
+  calendar:     lang === 'en' ? 'Book a Meeting'         : 'Rezervovat schůzku',
+  name:         lang === 'en' ? 'Full Name'              : 'Jméno a příjmení',
+  emailField:   lang === 'en' ? 'Work Email'             : 'Pracovní e-mail',
+  phoneField:   lang === 'en' ? 'Phone (optional)'       : 'Telefon (nepovinné)',
+  company:      lang === 'en' ? 'Company (optional)'     : 'Firma (nepovinné)',
+  message:      lang === 'en' ? 'Message'                : 'Zpráva',
+  submit:       lang === 'en' ? 'Send Message'           : 'Odeslat zprávu',
+  sending:      lang === 'en' ? 'Sending…'               : 'Odesílám…',
+  success:      lang === 'en' ? 'Thank you! We\'ll be in touch within 24 hours.' : 'Děkujeme! Ozveme se do 24 hodin.',
+  error:        lang === 'en' ? 'Something went wrong. Please try again or email us directly.' : 'Něco se pokazilo. Zkuste to znovu nebo nás kontaktujte přímo e-mailem.',
+};
+---
+
+<section id="kontakt" class="py-24 bg-[#050505] border-t border-white/5">
+  <div class="container-section">
+
+    <div class="mb-14 animate-on-scroll">
+      <span class="section-number">{labels.sectionNum}</span>
+      <h2 class="mt-3 text-3xl md:text-4xl lg:text-5xl font-bold text-white">
+        {labels.heading}
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+      <!-- Left: contact info -->
+      <div class="flex flex-col gap-6 animate-on-scroll">
+        <a href={`mailto:${contact.email}`} class="card p-5 flex items-center gap-4 hover:border-white/10 transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00A39A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div>
+            <p class="text-neutral-400 text-xs mb-0.5">{labels.email}</p>
+            <p class="text-white font-medium group-hover:text-primary transition-colors">{contact.email}</p>
+          </div>
+        </a>
+
+        <a href={`tel:${contact.phone.replace(/\s/g, '')}`} class="card p-5 flex items-center gap-4 hover:border-white/10 transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00A39A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.64A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.29 6.29l1.52-1.52a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          </div>
+          <div>
+            <p class="text-neutral-400 text-xs mb-0.5">{labels.phone}</p>
+            <p class="text-white font-medium group-hover:text-primary transition-colors">{contact.phone}</p>
+          </div>
+        </a>
+
+        <div class="card p-5 flex items-center gap-4">
+          <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00A39A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <p class="text-neutral-400 text-xs mb-0.5">{labels.address}</p>
+            <p class="text-white font-medium">{company.address}</p>
+            <p class="text-white font-medium">{company.zipCode} {company.city}</p>
+          </div>
+        </div>
+
+        {contact.calendarLink && (
+          <a
+            href={getLocalizedHref(contact.calendarLink, lang)}
+            target="_blank" rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-primary/30 text-primary font-medium hover:bg-primary/10 transition-all"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            {labels.calendar}
+          </a>
+        )}
+      </div>
+
+      <!-- Right: contact form -->
+      <div class="animate-on-scroll" style="animation-delay: 0.1s">
+        <form id="contact-form" class="flex flex-col gap-4" novalidate>
+          <!-- Honeypot -->
+          <input type="text" name="_honeypot" style="display:none" tabindex="-1" autocomplete="off" />
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input type="text" name="name" label={labels.name} required />
+            <Input type="email" name="email" label={labels.emailField} required />
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input type="tel" name="phone" label={labels.phoneField} />
+            <Input type="text" name="company" label={labels.company} />
+          </div>
+          <Input type="textarea" name="message" label={labels.message} rows={5} required />
+
+          <div id="contact-msg" class="hidden text-sm px-4 py-3 rounded-lg" role="alert"></div>
+
+          <button
+            id="contact-submit"
+            type="submit"
+            class="inline-flex items-center justify-center px-8 py-4 text-lg font-medium rounded-lg bg-primary text-white hover:bg-primary-light transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {labels.submit}
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ submitLabel: labels.submit, sendingLabel: labels.sending, successMsg: labels.success, errorMsg: labels.error }}>
+  const form = document.getElementById('contact-form');
+  const submitBtn = document.getElementById('contact-submit');
+  const msgBox = document.getElementById('contact-msg');
+
+  if (form && submitBtn && msgBox) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formEl = /** @type {HTMLFormElement} */ (form);
+      const data = Object.fromEntries(new FormData(formEl));
+
+      // Basic validation
+      if (!data['name'] || !data['email'] || !data['message']) return;
+      if (data['_honeypot']) return; // bot trap
+
+      submitBtn.setAttribute('disabled', 'true');
+      submitBtn.textContent = sendingLabel;
+      msgBox.className = 'hidden text-sm px-4 py-3 rounded-lg';
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+
+        if (res.ok) {
+          msgBox.textContent = successMsg;
+          msgBox.className = 'text-sm px-4 py-3 rounded-lg bg-primary/10 border border-primary/30 text-primary';
+          formEl.reset();
+        } else {
+          throw new Error('server');
+        }
+      } catch {
+        msgBox.textContent = errorMsg;
+        msgBox.className = 'text-sm px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400';
+      } finally {
+        submitBtn.removeAttribute('disabled');
+        submitBtn.textContent = submitLabel;
+      }
+    });
+  }
+</script>

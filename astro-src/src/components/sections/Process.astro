@@ -1,0 +1,295 @@
+---
+import siteData from '../../utils/siteData';
+import { t } from '../../utils/i18n';
+import Icon from '../ui/Icon.astro';
+import type { Language } from '../../types';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = 'cs' } = Astro.props;
+const section = siteData.process;
+
+if (!section.enabled) return;
+
+const headline = t(section, 'headline', lang);
+
+const stepIcons = ['calendar', 'target', 'chart', 'document'];
+---
+
+<section id="process" class="process-section py-28 relative overflow-hidden">
+  <!-- Background mesh -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] rounded-full bg-primary/[0.03] blur-[100px]" />
+  </div>
+
+  <div class="container-section relative z-10">
+    <div class="mb-16 text-center animate-on-scroll">
+      <span class="section-number">04</span>
+      <h2 class="mt-4 text-3xl md:text-4xl lg:text-5xl font-extrabold text-white">
+        {headline}
+      </h2>
+    </div>
+
+    <!-- Animated Roadmap -->
+    <div class="roadmap" data-roadmap>
+      {section.steps.map((step, i) => (
+        <div
+          class="roadmap-step"
+          data-roadmap-step
+          style={`--step-index: ${i}`}
+        >
+          <!-- Connector line (not on first) -->
+          {i > 0 && (
+            <div class="roadmap-connector" data-roadmap-connector aria-hidden="true">
+              <div class="roadmap-connector-fill" />
+            </div>
+          )}
+
+          <!-- Step node -->
+          <div class="roadmap-node" data-roadmap-node>
+            <div class="roadmap-node-ring" />
+            <div class="roadmap-node-inner">
+              <span class="roadmap-node-number">{String(step.number).padStart(2, '0')}</span>
+            </div>
+            <div class="roadmap-node-pulse" />
+          </div>
+
+          <!-- Step content -->
+          <div class="roadmap-content">
+            <div class="roadmap-card card p-6">
+              {step.icon && (
+                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4">
+                  <Icon name={step.icon} size={20} />
+                </div>
+              )}
+              <h3 class="text-lg font-bold text-white mb-2">
+                {t(step, 'title', lang)}
+              </h3>
+              <p class="text-neutral-400 text-sm leading-relaxed">
+                {t(step, 'description', lang)}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .process-section {
+    background: linear-gradient(180deg, #060606 0%, #0a0a0f 50%, #060606 100%);
+  }
+
+  /* --- Roadmap Layout ---------------------------------------------------- */
+
+  .roadmap {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .roadmap-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    transition-delay: calc(var(--step-index) * 0.2s);
+  }
+
+  .roadmap-step.is-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* --- Connector Line ---------------------------------------------------- */
+
+  .roadmap-connector {
+    width: 2px;
+    height: 3rem;
+    background: rgba(255, 255, 255, 0.06);
+    position: relative;
+    overflow: hidden;
+    border-radius: 1px;
+  }
+
+  .roadmap-connector-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(180deg, var(--color-primary), var(--color-primary-light));
+    border-radius: 1px;
+    transition: height 0.8s ease;
+    transition-delay: calc(var(--step-index) * 0.2s + 0.3s);
+  }
+
+  .roadmap-step.is-active .roadmap-connector-fill {
+    height: 100%;
+  }
+
+  /* --- Node (Circle) ----------------------------------------------------- */
+
+  .roadmap-node {
+    position: relative;
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+  }
+
+  .roadmap-node-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(212, 0, 116, 0.25);
+    transition: border-color 0.5s ease, box-shadow 0.5s ease;
+  }
+
+  .roadmap-step.is-active .roadmap-node-ring {
+    border-color: rgba(212, 0, 116, 0.6);
+    box-shadow: 0 0 25px rgba(212, 0, 116, 0.15);
+  }
+
+  .roadmap-node-inner {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(212, 0, 116, 0.15), rgba(212, 0, 116, 0.08));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .roadmap-node-number {
+    font-family: var(--font-heading);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    letter-spacing: 0.05em;
+  }
+
+  .roadmap-node-pulse {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid rgba(212, 0, 116, 0.2);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .roadmap-step.is-active .roadmap-node-pulse {
+    opacity: 1;
+    animation: dotPulse 2s ease-in-out infinite;
+    animation-delay: calc(var(--step-index) * 0.3s);
+  }
+
+  @keyframes dotPulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.3); opacity: 0; }
+  }
+
+  /* --- Content Card ------------------------------------------------------ */
+
+  .roadmap-content {
+    width: 100%;
+  }
+
+  .roadmap-card {
+    text-align: center;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .roadmap-step.is-active .roadmap-card {
+    border-color: rgba(212, 0, 116, 0.15);
+  }
+
+  .roadmap-card .w-10 {
+    margin-inline: auto;
+  }
+
+  /* --- Desktop: horizontal layout ---------------------------------------- */
+
+  @media (min-width: 768px) {
+    .roadmap {
+      flex-direction: row;
+      align-items: flex-start;
+      max-width: 100%;
+      gap: 0;
+    }
+
+    .roadmap-step {
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .roadmap-connector {
+      position: absolute;
+      width: calc(100% - 4rem);
+      height: 2px;
+      top: 2rem;
+      right: calc(50% + 2rem);
+      border-radius: 1px;
+    }
+
+    .roadmap-connector-fill {
+      width: 0%;
+      height: 100%;
+      transition: width 0.8s ease;
+      transition-delay: calc(var(--step-index) * 0.2s + 0.3s);
+    }
+
+    .roadmap-step.is-active .roadmap-connector-fill {
+      width: 100%;
+      height: 100%;
+    }
+
+    .roadmap-content {
+      padding-inline: 0.5rem;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var roadmap = document.querySelector('[data-roadmap]');
+    if (!roadmap) return;
+
+    var steps = roadmap.querySelectorAll('[data-roadmap-step]');
+    var activated = false;
+
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting && !activated) {
+            activated = true;
+            steps.forEach(function (step, i) {
+              setTimeout(function () {
+                step.classList.add('is-active');
+              }, i * 300);
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(roadmap);
+  })();
+</script>

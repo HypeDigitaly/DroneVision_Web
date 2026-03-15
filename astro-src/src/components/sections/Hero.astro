@@ -1,0 +1,96 @@
+---
+import siteData from '../../utils/siteData';
+import { t } from '../../utils/i18n';
+import type { Language } from '../../types';
+import HeroQuiz from './HeroQuiz.astro';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = 'cs' } = Astro.props;
+const hero = siteData.hero;
+const eyebrow = t(hero, 'eyebrow', lang);
+const headline = t(hero, 'headline', lang);
+const subheadline = t(hero, 'subheadline', lang);
+---
+
+<section
+  id="hero"
+  class="hero-section relative overflow-hidden"
+>
+  {hero.backgroundImage && (
+    <div
+      class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
+      style={`background-image: url('${hero.backgroundImage}')`}
+      aria-hidden="true"
+    />
+  )}
+
+  <!-- Grid overlay -->
+  <div class="hero-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
+
+  <!-- Gradient orb -->
+  <div
+    class="absolute top-[10%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full blur-[140px] pointer-events-none"
+    style="background: rgba(212, 0, 116, 0.07);"
+    aria-hidden="true"
+  />
+
+  <!-- Vignette overlay -->
+  <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at center, transparent 40%, #050505 100%);" aria-hidden="true" />
+
+  <div class="container-section relative z-10 pt-28 pb-16 md:pt-32 md:pb-20 text-center">
+
+    <!-- Headline area — compact -->
+    <div class="max-w-3xl mx-auto flex flex-col items-center">
+
+      <!-- Eyebrow -->
+      <div class="animate-on-scroll flex items-center gap-3 mb-4">
+        <span class="hidden sm:block w-8 h-px bg-primary/40" aria-hidden="true" />
+        <p class="text-[13px] uppercase tracking-[0.15em] text-primary font-bold">
+          {eyebrow}
+        </p>
+        <span class="hidden sm:block w-8 h-px bg-primary/40" aria-hidden="true" />
+      </div>
+
+      <!-- H1 Headline — slightly smaller to fit -->
+      <h1
+        class="font-extrabold text-white leading-[1.08] max-w-[680px] animate-on-scroll"
+        style="font-size: clamp(28px, 4.5vw, 50px); animation-delay: 0.1s;"
+      >
+        {headline}
+      </h1>
+
+      <!-- Subheadline -->
+      <p
+        class="text-neutral-400 leading-relaxed max-w-[520px] mt-3 animate-on-scroll"
+        style="font-size: clamp(15px, 1.8vw, 18px); animation-delay: 0.2s;"
+      >
+        {subheadline}
+      </p>
+
+    </div>
+
+    <!-- HeroQuiz — immediately visible -->
+    <div class="mt-8 w-full flex justify-center animate-on-scroll" style="animation-delay: 0.3s;">
+      <HeroQuiz lang={lang} />
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .hero-section {
+    background: linear-gradient(180deg, #050505 0%, #080810 40%, #050505 100%);
+  }
+
+  .hero-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, transparent 70%);
+  }
+</style>

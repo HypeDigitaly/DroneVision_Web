@@ -1,0 +1,117 @@
+---
+import siteData from '../../utils/siteData';
+import { t } from '../../utils/i18n';
+import type { Language } from '../../types';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = 'cs' } = Astro.props;
+const section = siteData.stats;
+
+if (!section.enabled) return;
+---
+
+<section id="stats" class="stats-section py-20 relative overflow-hidden">
+  <!-- Gradient accent -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+    <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+  </div>
+
+  <div class="container-section relative z-10">
+    <dl class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4" data-stats-grid>
+      {section.items.map((item, i) => (
+        <div
+          class="stats-item flex flex-col items-center text-center"
+          data-stats-item
+          style={`--stat-delay: ${i * 0.15}s`}
+        >
+          <div class="stats-value-wrapper mb-3">
+            <dd class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white counter-value"
+                data-counter-value={item.value}>
+              {item.value}
+            </dd>
+          </div>
+          <dt class="text-sm text-neutral-400 font-medium tracking-wide">
+            {t(item, 'label', lang)}
+          </dt>
+          <div class="stats-accent mt-4 w-8 h-0.5 rounded-full bg-primary/30" aria-hidden="true" />
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<style>
+  .stats-section {
+    background: linear-gradient(180deg, #080810 0%, #0a0a14 50%, #080810 100%);
+  }
+
+  .stats-item {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    transition-delay: var(--stat-delay);
+  }
+
+  .stats-item.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .stats-value-wrapper {
+    position: relative;
+  }
+
+  .stats-accent {
+    transition: width 0.6s ease;
+    transition-delay: calc(var(--stat-delay) + 0.3s);
+    width: 0;
+  }
+
+  .stats-item.is-visible .stats-accent {
+    width: 2rem;
+  }
+
+  /* Dividers between items on desktop */
+  @media (min-width: 768px) {
+    .stats-item:not(:last-child) {
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+    }
+  }
+
+  /* Dividers on mobile — bottom borders for top row */
+  @media (max-width: 767px) {
+    .stats-item:nth-child(-n+2) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 2rem;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var grid = document.querySelector('[data-stats-grid]');
+    if (!grid) return;
+
+    var items = grid.querySelectorAll('[data-stats-item]');
+
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            items.forEach(function (item) {
+              item.classList.add('is-visible');
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(grid);
+  })();
+</script>
