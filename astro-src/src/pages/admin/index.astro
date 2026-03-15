@@ -8,53 +8,146 @@ export const prerender = false;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Admin</title>
+    <title>CRM — DroneVision Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: Inter, sans-serif; background: #050505; color: #fff; min-height: 100vh; display: flex; flex-direction: column; }
-      .wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; width: 100%; }
-      h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; }
-      label { display: block; font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 0.4rem; }
-      input[type="password"] { width: 100%; max-width: 320px; padding: 0.6rem 0.9rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.95rem; outline: none; }
+      body { font-family: Inter, sans-serif; background: #050505; color: #fff; min-height: 100vh; }
+      .wrap { max-width: 1400px; margin: 0 auto; padding: 1.5rem; width: 100%; }
+
+      /* Login */
+      #login-view { max-width: 380px; margin: 15vh auto; }
+      #login-view h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; }
+      label { display: block; font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-bottom: 0.35rem; }
+      input[type="password"] { width: 100%; padding: 0.6rem 0.9rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; color: #fff; font-size: 0.95rem; outline: none; }
       input[type="password"]:focus { border-color: #D40074; }
-      .btn { display: inline-flex; align-items: center; padding: 0.55rem 1.2rem; border-radius: 8px; font-size: 0.9rem; font-weight: 500; cursor: pointer; border: none; transition: opacity 0.15s; }
+
+      .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1.1rem; border-radius: 8px; font-size: 0.85rem; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
       .btn:hover { opacity: 0.85; }
       .btn-primary { background: #D40074; color: #fff; }
-      .btn-ghost { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.7); }
-      .error { color: #f87171; font-size: 0.875rem; margin-top: 0.75rem; }
-      table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin-top: 1.5rem; }
-      th { text-align: left; padding: 0.6rem 0.9rem; color: rgba(255,255,255,0.5); font-weight: 500; border-bottom: 1px solid rgba(255,255,255,0.05); white-space: nowrap; }
-      td { padding: 0.65rem 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); vertical-align: top; }
-      tr:hover td { background: rgba(255,255,255,0.02); }
-      .count { color: rgba(255,255,255,0.45); font-size: 0.85rem; margin-bottom: 0.5rem; }
-      .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem; }
-      #login-view, #admin-view { width: 100%; }
+      .btn-ghost { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); }
+      .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+      .error-msg { color: #f87171; font-size: 0.85rem; margin-top: 0.6rem; }
+
+      /* Admin view */
       #admin-view { display: none; }
+      .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem; }
+      .topbar h1 { font-size: 1.35rem; font-weight: 700; }
+
+      /* Stats cards */
+      .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin-bottom: 1.25rem; }
+      .stat-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 0.9rem 1rem; }
+      .stat-card .stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+      .stat-card .stat-value { font-size: 1.6rem; font-weight: 700; }
+      .stat-card.quiz .stat-value { color: #D40074; }
+      .stat-card.contact .stat-value { color: #38bdf8; }
+      .stat-card.subscriber .stat-value { color: #a78bfa; }
+
+      /* Source filter tabs */
+      .tabs { display: flex; gap: 0.35rem; margin-bottom: 1rem; flex-wrap: wrap; }
+      .tab { padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.8rem; font-weight: 500; cursor: pointer; border: 1px solid transparent; background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5); transition: all 0.15s; }
+      .tab:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
+      .tab.active { background: rgba(212,0,116,0.15); color: #D40074; border-color: rgba(212,0,116,0.3); }
+
+      /* Table */
+      .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+      th { text-align: left; padding: 0.55rem 0.65rem; color: rgba(255,255,255,0.4); font-weight: 500; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; position: sticky; top: 0; background: #050505; z-index: 1; }
+      td { padding: 0.55rem 0.65rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(255,255,255,0.75); vertical-align: top; }
+      tr.lead-row { cursor: pointer; transition: background 0.1s; }
+      tr.lead-row:hover td { background: rgba(255,255,255,0.03); }
+
+      /* Source badges */
+      .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+      .badge-quiz { background: rgba(212,0,116,0.15); color: #D40074; }
+      .badge-contact { background: rgba(56,189,248,0.12); color: #38bdf8; }
+      .badge-subscriber { background: rgba(167,139,250,0.12); color: #a78bfa; }
+
+      /* AI status badge */
+      .ai-badge { display: inline-block; padding: 0.12rem 0.4rem; border-radius: 3px; font-size: 0.65rem; font-weight: 600; }
+      .ai-success { background: rgba(34,197,94,0.15); color: #22c55e; }
+      .ai-failed { background: rgba(248,113,113,0.15); color: #f87171; }
+      .ai-skipped { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.35); }
+
+      /* Detail row */
+      tr.detail-row { display: none; }
+      tr.detail-row.open { display: table-row; }
+      tr.detail-row td { padding: 0.75rem 0.65rem; background: rgba(255,255,255,0.015); border-bottom: 2px solid rgba(212,0,116,0.1); }
+      .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 2rem; font-size: 0.8rem; }
+      .detail-grid dt { color: rgba(255,255,255,0.4); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+      .detail-grid dd { color: rgba(255,255,255,0.85); margin-bottom: 0.5rem; word-break: break-word; }
+      .ai-content { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 0.75rem; margin-top: 0.5rem; font-size: 0.8rem; line-height: 1.5; color: rgba(255,255,255,0.7); white-space: pre-wrap; }
+
+      /* Empty / loading / error states */
+      .state-msg { text-align: center; padding: 3rem 1rem; color: rgba(255,255,255,0.35); font-size: 0.9rem; }
+      .state-msg.error { color: #f87171; }
+      .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.1); border-top-color: #D40074; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 0.5rem; vertical-align: middle; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        .detail-grid { grid-template-columns: 1fr; }
+        .stats { grid-template-columns: repeat(2, 1fr); }
+      }
+      @media (max-width: 600px) {
+        .wrap { padding: 1rem 0.75rem; }
+        .stats { grid-template-columns: 1fr 1fr; }
+      }
     </style>
   </head>
   <body>
     <div class="wrap">
+      <!-- LOGIN VIEW -->
       <div id="login-view">
-        <h1>Admin</h1>
+        <h1>DroneVision Admin</h1>
         <form id="login-form">
           <label for="pwd">Heslo</label>
           <input type="password" id="pwd" autocomplete="current-password" required />
           <div style="margin-top:0.9rem;">
-            <button type="submit" class="btn btn-primary">Přihlásit se</button>
+            <button type="submit" class="btn btn-primary">Prihlasit se</button>
           </div>
-          <p id="login-error" class="error" style="display:none;">Nesprávné heslo.</p>
+          <p id="login-error" class="error-msg" style="display:none;"></p>
         </form>
       </div>
 
+      <!-- ADMIN VIEW -->
       <div id="admin-view">
         <div class="topbar">
-          <h1>Leady</h1>
-          <button id="logout-btn" class="btn btn-ghost">Odhlásit se</button>
+          <h1>CRM Leady</h1>
+          <button id="logout-btn" class="btn btn-ghost">Odhlasit se</button>
         </div>
-        <p id="lead-count" class="count"></p>
+
+        <!-- Stats cards -->
+        <div class="stats" id="stats-cards">
+          <div class="stat-card">
+            <div class="stat-label">Celkem</div>
+            <div class="stat-value" id="stat-total">—</div>
+          </div>
+          <div class="stat-card quiz">
+            <div class="stat-label">Quiz</div>
+            <div class="stat-value" id="stat-quiz">—</div>
+          </div>
+          <div class="stat-card contact">
+            <div class="stat-label">Kontakt</div>
+            <div class="stat-value" id="stat-contact">—</div>
+          </div>
+          <div class="stat-card subscriber">
+            <div class="stat-label">Subscriber</div>
+            <div class="stat-value" id="stat-subscriber">—</div>
+          </div>
+        </div>
+
+        <!-- Source filter tabs -->
+        <div class="tabs" id="source-tabs">
+          <div class="tab active" data-source="all">Vse</div>
+          <div class="tab" data-source="quiz">Quiz</div>
+          <div class="tab" data-source="contact">Kontakt</div>
+          <div class="tab" data-source="subscriber">Subscriber</div>
+        </div>
+
+        <!-- Leads table -->
         <div id="leads-container"></div>
       </div>
     </div>
@@ -65,9 +158,12 @@ export const prerender = false;
         var adminView = document.getElementById('admin-view');
         var loginForm = document.getElementById('login-form');
         var loginError = document.getElementById('login-error');
-        var leadCount = document.getElementById('lead-count');
         var leadsContainer = document.getElementById('leads-container');
         var logoutBtn = document.getElementById('logout-btn');
+        var sourceTabs = document.getElementById('source-tabs');
+
+        var allLeads = [];
+        var currentFilter = 'all';
 
         function showAdmin() {
           loginView.style.display = 'none';
@@ -79,7 +175,7 @@ export const prerender = false;
           adminView.style.display = 'none';
         }
 
-        function escapeHtml(str) {
+        function esc(str) {
           if (!str) return '';
           return String(str)
             .replace(/&/g, '&amp;')
@@ -89,61 +185,258 @@ export const prerender = false;
             .replace(/'/g, '&#39;');
         }
 
-        function truncate(str, n) {
+        function trunc(str, n) {
           if (!str) return '';
-          return str.length > n ? str.slice(0, n) + '…' : str;
+          return str.length > n ? str.slice(0, n) + '\u2026' : str;
+        }
+
+        function fmtDate(iso) {
+          if (!iso) return '\u2014';
+          try {
+            var d = new Date(iso);
+            return d.toLocaleDateString('cs-CZ', { day: '2-digit', month: '2-digit', year: 'numeric' });
+          } catch (e) { return '\u2014'; }
+        }
+
+        function fmtBool(v) {
+          return v === true ? 'Ano' : v === false ? 'Ne' : '\u2014';
+        }
+
+        function fmtCzk(num) {
+          if (num == null || isNaN(num)) return '\u2014';
+          return esc(Number(num).toLocaleString('cs-CZ')) + ' Kc';
+        }
+
+        function sourceBadge(source) {
+          var map = {
+            quiz: '<span class="badge badge-quiz">Quiz</span>',
+            contact: '<span class="badge badge-contact">Kontakt</span>',
+            subscriber: '<span class="badge badge-subscriber">Subscriber</span>'
+          };
+          return map[source] || '<span class="badge">' + esc(source) + '</span>';
+        }
+
+        function aiBadge(ai) {
+          if (!ai) return '<span class="ai-badge ai-skipped">N/A</span>';
+          if (ai.status === 'success') return '<span class="ai-badge ai-success">OK</span>';
+          if (ai.status === 'failed') return '<span class="ai-badge ai-failed">Chyba</span>';
+          return '<span class="ai-badge ai-skipped">Preskoceno</span>';
+        }
+
+        function updateStats(counts) {
+          document.getElementById('stat-total').textContent = counts.total || 0;
+          document.getElementById('stat-quiz').textContent = counts.quiz || 0;
+          document.getElementById('stat-contact').textContent = counts.contact || 0;
+          document.getElementById('stat-subscriber').textContent = counts.subscriber || 0;
         }
 
         function renderLeads(leads) {
-          leadCount.textContent = 'Celkem: ' + leads.length + ' leadů';
           if (!leads.length) {
-            leadsContainer.innerHTML = '<p style="color:rgba(255,255,255,0.4);margin-top:1rem;">Žádné leady.</p>';
+            leadsContainer.innerHTML = '<div class="state-msg">Zadne leady pro tento filtr.</div>';
             return;
           }
-          var rows = leads.map(function (l) {
-            var date = l.submittedAt ? new Date(l.submittedAt).toLocaleDateString('cs-CZ') : '—';
-            return '<tr>'
-              + '<td>' + date + '</td>'
-              + '<td>' + escapeHtml(l.name || '—') + '</td>'
-              + '<td>' + escapeHtml(l.email || '—') + '</td>'
-              + '<td>' + escapeHtml(l.source || '—') + '</td>'
-              + '<td>' + escapeHtml(truncate(l.message || l.company || '', 80)) + '</td>'
-              + '</tr>';
-          }).join('');
-          leadsContainer.innerHTML = '<table>'
-            + '<thead><tr><th>Datum</th><th>Jméno</th><th>E-mail</th><th>Zdroj</th><th>Zpráva</th></tr></thead>'
+
+          var rows = '';
+          for (var i = 0; i < leads.length; i++) {
+            var l = leads[i];
+            var isQuiz = l.source === 'quiz';
+            var rowId = 'lead-' + i;
+
+            // Main row
+            rows += '<tr class="lead-row" data-detail="' + rowId + '">'
+              + '<td>' + fmtDate(l.submittedAt) + '</td>'
+              + '<td>' + sourceBadge(l.source) + '</td>'
+              + '<td>' + esc(l.name || '\u2014') + '</td>'
+              + '<td><a href="mailto:' + esc(l.email || '') + '" style="color:#38bdf8;text-decoration:none;">' + esc(l.email || '\u2014') + '</a></td>'
+              + '<td>' + esc(l.phone || '\u2014') + '</td>';
+
+            // Quiz-specific columns
+            if (isQuiz) {
+              rows += '<td>' + esc(l.capacityKw != null ? l.capacityKw + ' kWp' : '\u2014') + '</td>'
+                + '<td>' + esc(l.panelYear || '\u2014') + '</td>'
+                + '<td>' + fmtBool(l.planExpansion) + '</td>'
+                + '<td style="white-space:nowrap;">' + fmtCzk(l.annualLossKc) + '</td>'
+                + '<td style="white-space:nowrap;">' + (l.pricingTier ? fmtCzk(l.pricingTier.price) : '\u2014') + '</td>'
+                + '<td>' + aiBadge(l.aiAnalysis) + '</td>';
+            } else {
+              // Empty cells for non-quiz leads
+              rows += '<td colspan="6" style="color:rgba(255,255,255,0.2);font-size:0.7rem;">'
+                + (l.source === 'contact' ? esc(trunc(l.message || l.company || '', 60)) : '')
+                + '</td>';
+            }
+            rows += '</tr>';
+
+            // Detail row (hidden by default)
+            rows += '<tr class="detail-row" id="' + rowId + '"><td colspan="11">';
+            rows += buildDetail(l);
+            rows += '</td></tr>';
+          }
+
+          leadsContainer.innerHTML = '<div class="table-wrap"><table>'
+            + '<thead><tr>'
+            + '<th>Datum</th>'
+            + '<th>Zdroj</th>'
+            + '<th>Jmeno</th>'
+            + '<th>Email</th>'
+            + '<th>Telefon</th>'
+            + '<th>Kapacita</th>'
+            + '<th>Rok panelu</th>'
+            + '<th>Rozsireni</th>'
+            + '<th>Rocni ztrata</th>'
+            + '<th>Cenovy tier</th>'
+            + '<th>AI</th>'
+            + '</tr></thead>'
             + '<tbody>' + rows + '</tbody>'
-            + '</table>';
+            + '</table></div>';
+
+          // Attach click handlers for row expansion
+          var clickRows = leadsContainer.querySelectorAll('.lead-row');
+          for (var j = 0; j < clickRows.length; j++) {
+            clickRows[j].addEventListener('click', toggleDetail);
+          }
         }
 
-        function fetchLeads(password) {
+        function buildDetail(l) {
+          var html = '<dl class="detail-grid">';
+
+          html += '<div><dt>Jmeno</dt><dd>' + esc(l.name || '\u2014') + '</dd></div>';
+          html += '<div><dt>Email</dt><dd>' + esc(l.email || '\u2014') + '</dd></div>';
+
+          if (l.phone) {
+            html += '<div><dt>Telefon</dt><dd><a href="tel:' + esc(l.phone) + '" style="color:#38bdf8;text-decoration:none;">' + esc(l.phone) + '</a></dd></div>';
+          }
+
+          if (l.source === 'quiz') {
+            html += '<div><dt>Kapacita</dt><dd>' + esc(l.capacityKw != null ? l.capacityKw + ' kWp' : '\u2014') + '</dd></div>';
+            html += '<div><dt>Rok panelu</dt><dd>' + esc(l.panelYear || '\u2014') + '</dd></div>';
+            html += '<div><dt>Plan rozsireni</dt><dd>' + fmtBool(l.planExpansion) + '</dd></div>';
+            html += '<div><dt>Rocni ztrata</dt><dd>' + fmtCzk(l.annualLossKc) + '</dd></div>';
+
+            if (l.pricingTier) {
+              html += '<div><dt>Cenovy tier</dt><dd>' + esc(l.pricingTier.label || '') + ' \u2014 ' + fmtCzk(l.pricingTier.price) + '</dd></div>';
+            }
+
+            if (l.consent) {
+              html += '<div><dt>Souhlas GDPR</dt><dd>' + fmtDate(l.consent.timestamp) + ' (v' + esc(l.consent.policyVersion || '?') + ')</dd></div>';
+            }
+
+            if (l.submitCount && l.submitCount > 1) {
+              html += '<div><dt>Pocet odeslani</dt><dd>' + esc(String(l.submitCount)) + 'x</dd></div>';
+            }
+            if (l.updatedAt && l.updatedAt !== l.submittedAt) {
+              html += '<div><dt>Aktualizovano</dt><dd>' + fmtDate(l.updatedAt) + '</dd></div>';
+            }
+          }
+
+          if (l.source === 'contact') {
+            if (l.company) html += '<div><dt>Firma</dt><dd>' + esc(l.company) + '</dd></div>';
+            if (l.message) html += '<div><dt>Zprava</dt><dd>' + esc(l.message) + '</dd></div>';
+          }
+
+          html += '</dl>';
+
+          // AI Analysis section for quiz leads
+          if (l.source === 'quiz' && l.aiAnalysis) {
+            var ai = l.aiAnalysis;
+            html += '<div style="margin-top:0.75rem;">';
+            html += '<dt style="color:rgba(255,255,255,0.4);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.35rem;">AI Analyza (' + aiBadge(ai) + ')</dt>';
+            if (ai.status === 'success' && ai.content) {
+              html += '<div class="ai-content">' + esc(ai.content) + '</div>';
+              if (ai.model) {
+                html += '<div style="font-size:0.65rem;color:rgba(255,255,255,0.25);margin-top:0.3rem;">Model: ' + esc(ai.model) + ' | Tokeny: ' + esc(String(ai.tokensUsed || '?')) + '</div>';
+              }
+            } else if (ai.status === 'failed') {
+              html += '<div style="color:#f87171;font-size:0.8rem;">Chyba: ' + esc(ai.reason || 'Neznama chyba') + '</div>';
+            } else if (ai.status === 'skipped') {
+              html += '<div style="color:rgba(255,255,255,0.35);font-size:0.8rem;">Preskoceno: ' + esc(ai.reason || '') + '</div>';
+            }
+            html += '</div>';
+          }
+
+          return html;
+        }
+
+        function toggleDetail(e) {
+          var row = e.currentTarget;
+          var detailId = row.getAttribute('data-detail');
+          var detailRow = document.getElementById(detailId);
+          if (detailRow) {
+            detailRow.classList.toggle('open');
+          }
+        }
+
+        function applyFilter(source) {
+          currentFilter = source;
+          // Update tab active state
+          var tabs = sourceTabs.querySelectorAll('.tab');
+          for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.toggle('active', tabs[i].getAttribute('data-source') === source);
+          }
+          // Filter and render
+          var filtered = source === 'all' ? allLeads : allLeads.filter(function (l) { return l.source === source; });
+          renderLeads(filtered);
+        }
+
+        // Tab click handlers
+        sourceTabs.addEventListener('click', function (e) {
+          var tab = e.target.closest('.tab');
+          if (!tab) return;
+          var source = tab.getAttribute('data-source');
+          applyFilter(source);
+        });
+
+        function fetchLeads(authToken) {
+          leadsContainer.innerHTML = '<div class="state-msg"><span class="spinner"></span> Nacitani dat\u2026</div>';
+
           fetch('/api/admin-leads', {
-            headers: { 'Authorization': 'Basic ' + btoa('admin:' + password) }
+            headers: { 'Authorization': 'Basic ' + authToken }
           })
             .then(function (res) {
               if (res.status === 401) {
-                sessionStorage.removeItem('adminPwd');
-                loginError.textContent = 'Nesprávné heslo.';
+                sessionStorage.removeItem('adminAuth');
+                loginError.textContent = 'Nespravne heslo.';
                 loginError.style.display = 'block';
+                leadsContainer.innerHTML = '';
                 showLogin();
                 return null;
+              }
+              if (res.status === 429) {
+                leadsContainer.innerHTML = '<div class="state-msg error">Prilis mnoho pokusu. Zkuste to za hodinu.</div>';
+                showAdmin();
+                return null;
+              }
+              if (!res.ok) {
+                throw new Error('Server vratil chybu ' + res.status);
               }
               return res.json();
             })
             .then(function (data) {
               if (!data) return;
-              var leads = Array.isArray(data) ? data : (data.leads || data.data || []);
+
+              allLeads = data.leads || [];
               showAdmin();
-              renderLeads(leads);
+
+              // Update stats
+              if (data.counts) {
+                updateStats(data.counts);
+              } else {
+                updateStats({ total: allLeads.length, quiz: 0, contact: 0, subscriber: 0 });
+              }
+
+              // Render with current filter
+              applyFilter(currentFilter);
             })
-            .catch(function () {
-              leadsContainer.innerHTML = '<p style="color:#f87171;margin-top:1rem;">Chyba při načítání dat.</p>';
+            .catch(function (err) {
+              console.error('[admin] Fetch error:', err);
+              leadsContainer.innerHTML = '<div class="state-msg error">Chyba pri nacitani dat. Zkontrolujte pripojeni a konfiguraci serveru.</div>';
               showAdmin();
             });
         }
 
         logoutBtn.addEventListener('click', function () {
-          sessionStorage.removeItem('adminPwd');
+          sessionStorage.removeItem('adminAuth');
+          allLeads = [];
+          currentFilter = 'all';
           showLogin();
         });
 
@@ -151,11 +444,16 @@ export const prerender = false;
           e.preventDefault();
           var pwd = document.getElementById('pwd').value;
           loginError.style.display = 'none';
-          sessionStorage.setItem('adminPwd', pwd);
-          fetchLeads(pwd);
+          // Store only the Base64-encoded auth token, not the raw password
+          var authToken = btoa('admin:' + pwd);
+          sessionStorage.setItem('adminAuth', authToken);
+          // Clear the password from the input immediately
+          document.getElementById('pwd').value = '';
+          fetchLeads(authToken);
         });
 
-        var saved = sessionStorage.getItem('adminPwd');
+        // Auto-login if auth token is cached
+        var saved = sessionStorage.getItem('adminAuth');
         if (saved) {
           fetchLeads(saved);
         }

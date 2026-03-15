@@ -1,14 +1,18 @@
-import type { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
+import type { Handler, HandlerEvent } from "@netlify/functions";
 import { getStore } from "@netlify/blobs";
-import { createHash } from "crypto";
+import { createHash, timingSafeEqual } from "crypto";
 
 // =============================================================================
 // ADMIN LEADS API — Netlify Function
 // =============================================================================
-// GET-only endpoint that returns paginated leads from contact-leads, subscribers,
-// and quiz-leads Blob stores. Protected by HTTP Basic Auth (admin:ADMIN_PASSWORD).
-// Pass ?store=quiz-leads to read from the quiz-leads store instead of the default
-// merged contact-leads + subscribers view.
+// GET-only endpoint that returns ALL leads from quiz-leads, contact-leads,
+// and subscribers Blob stores merged into a single sorted response.
+// Protected by HTTP Basic Auth (admin:ADMIN_PASSWORD).
+//
+// Query params:
+//   source  — filter by "quiz" | "contact" | "subscriber"
+//   limit   — items per page (1-500, default 200)
+//   offset  — pagination offset (default 0)
 //
 // Env vars required: ADMIN_PASSWORD, SITE_URL
 // =============================================================================
@@ -21,23 +25,21 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Methods": "GET, OPTIONS",
   "Content-Type": "application/json",
   "X-Content-Type-Options": "nosniff",
+  "Cache-Control": "no-store, no-cache, must-revalidate, private",
+  "Pragma": "no-cache",
 };
 
 // ---------------------------------------------------------------------------
 // Auth
 // ---------------------------------------------------------------------------
 
-/** Prevent timing attacks when comparing passwords.
- *  Both values are SHA-256 hashed before comparison so the XOR loop always
- *  operates on equal-length 64-char hex strings, regardless of input length. */
+/** Constant-time comparison using Node.js native crypto.timingSafeEqual.
+ *  Both values are SHA-256 hashed first so the comparison always operates
+ *  on equal-length buffers regardless of input length. */
 function constantTimeEqual(a: string, b: string): boolean {
-  const ha = createHash("sha256").update(a).digest("hex");
-  const hb = createHash("sha256").update(b).digest("hex");
-  let result = 0;
-  for (let i = 0; i < ha.length; i++) {
-    result |= ha.charCodeAt(i) ^ hb.charCodeAt(i);
-  }
-  return result === 0;
+  const ha = createHash("sha256").update(a).digest();
+  const hb = createHash("sha256").update(b).digest();
+  return timingSafeEqual(ha, hb);
 }
 
 function authenticate(authHeader: string | undefined): boolean {
@@ -55,7 +57,6 @@ function authenticate(authHeader: string | undefined): boolean {
     return false;
   }
 
-  // Format: admin:<password>
   const colonIdx = decoded.indexOf(":");
   if (colonIdx === -1) return false;
   const suppliedUsername = decoded.slice(0, colonIdx);
@@ -84,17 +85,13 @@ interface FullLead extends IndexEntry {
 }
 
 // ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
-// Rate limiting (admin brute-force protection)
+// Rate limiting
 // ---------------------------------------------------------------------------
 
 async function checkAdminRateLimit(ip: string): Promise<boolean> {
   try {
     const store = getStore({ name: "rate-limits", consistency: "strong" });
-    const bucket = Math.floor(Date.now() / 3_600_000); // 1-hour bucket
+    const bucket = Math.floor(Date.now() / 3_600_000);
     const hashedIp = createHash("sha256").update(ip).digest("hex").slice(0, 16);
     const key = `admin-${hashedIp}-${bucket}`;
     const raw = await store.get(key);
@@ -103,9 +100,9 @@ async function checkAdminRateLimit(ip: string): Promise<boolean> {
     await store.set(key, String(count + 1));
     return true;
   } catch (e) {
-    // If the rate-limit store is unavailable, allow the request through
+    // Fail closed for admin endpoint — deny request when rate-limit store is unavailable
     console.error("[admin-leads] rate-limit store error:", e);
-    return true;
+    return false;
   }
 }
 
@@ -138,9 +135,12 @@ async function readIndex(storeName: string, source: string, indexKey?: string): 
     const key = indexKey ?? (storeName === "subscribers" ? "_subscribers_index" : "_leads_index");
     const raw = await store.get(key);
     if (!raw) return [];
-    const parsed: IndexEntry[] = JSON.parse(raw);
-    // Ensure each entry carries the correct source label
-    return parsed.map((e) => ({ ...e, source: e.source || source }));
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) {
+      console.error(`[admin-leads] Index in ${storeName} is not an array`);
+      return [];
+    }
+    return (parsed as IndexEntry[]).map((e) => ({ ...e, source: e.source || source }));
   } catch (e) {
     console.error(`[admin-leads] Failed to read index from ${storeName}:`, e);
     return [];
@@ -159,13 +159,23 @@ async function fetchFullLead(storeName: string, id: string): Promise<FullLead | 
   }
 }
 
+function storeNameForSource(source: string): string {
+  if (source === "quiz") return "quiz-leads";
+  if (source === "subscriber") return "subscribers";
+  return "contact-leads";
+}
+
 // ---------------------------------------------------------------------------
 // Handler
 // ---------------------------------------------------------------------------
 
-const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
+const handler: Handler = async (event: HandlerEvent) => {
   if (!SITE_URL) {
-    return { statusCode: 500, body: JSON.stringify({ success: false, error: 'Server configuration error' }) };
+    return {
+      statusCode: 500,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({ success: false, error: "Server configuration error" }),
+    };
   }
 
   if (event.httpMethod === "OPTIONS") {
@@ -176,7 +186,6 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     return err(405, "Method not allowed");
   }
 
-  // Rate limiting — must run before auth to prevent brute-force
   const ip =
     event.headers["x-forwarded-for"]?.split(",")[0].trim() ||
     event.headers["client-ip"] ||
@@ -184,119 +193,83 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
 
   const allowed = await checkAdminRateLimit(ip);
   if (!allowed) {
-    return err(429, "Too many requests", {
-      "Retry-After": "3600",
-    });
+    return err(429, "Too many requests", { "Retry-After": "3600" });
   }
 
-  // Authentication
   if (!authenticate(event.headers["authorization"])) {
-    return err(401, "Unauthorized", {
-      "WWW-Authenticate": 'Basic realm="Admin"',
-    });
+    return err(401, "Unauthorized", { "WWW-Authenticate": 'Basic realm="Admin"' });
   }
 
   // Query params
   const params = event.queryStringParameters || {};
-  const storeParam = params.store as string | undefined;
   const sourceFilter = params.source as string | undefined;
-  const limit = clampInt(params.limit ?? null, 1, 200, 50);
+  const limit = clampInt(params.limit ?? null, 1, 500, 200);
   const offset = clampInt(params.offset ?? null, 0, Number.MAX_SAFE_INTEGER, 0);
 
-  // ---------------------------------------------------------------------------
-  // quiz-leads store branch
-  // ---------------------------------------------------------------------------
-  if (storeParam === "quiz-leads") {
-    const quizIndex = await readIndex("quiz-leads", "quiz", "_quiz_leads_index");
-
-    // Sort by submittedAt descending
-    quizIndex.sort(
-      (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
-    );
-
-    const total = quizIndex.length;
-    const page = quizIndex.slice(offset, offset + limit);
-
-    const fullLeads = await Promise.all(
-      page.map(async (entry) => {
-        const full = await fetchFullLead("quiz-leads", entry.id);
-        if (!full) {
-          return entry as FullLead;
-        }
-        if (typeof full.message === "string" && full.message.length > 200) {
-          full.message = full.message.slice(0, 200) + "…";
-        }
-        // Truncate aiAnalysis.content to prevent large AI text from bloating
-        // admin responses. The full content remains in Blob storage.
-        const ai = full.aiAnalysis;
-        if (
-          ai !== null &&
-          typeof ai === "object" &&
-          !Array.isArray(ai) &&
-          typeof (ai as Record<string, unknown>).content === "string"
-        ) {
-          const aiRecord = ai as Record<string, unknown>;
-          const content = aiRecord.content as string;
-          if (content.length > 500) {
-            full.aiAnalysis = { ...aiRecord, content: content.slice(0, 500) + "…" };
-          }
-        }
-        return full;
-      })
-    );
-
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({
-        leads: fullLeads,
-        total,
-        offset,
-        limit,
-      }),
-    };
+  if (sourceFilter && sourceFilter !== "quiz" && sourceFilter !== "contact" && sourceFilter !== "subscriber") {
+    return err(400, "source must be 'quiz', 'contact', or 'subscriber'");
   }
 
-  // ---------------------------------------------------------------------------
-  // Default branch: contact-leads + subscribers (existing behaviour)
-  // ---------------------------------------------------------------------------
-
-  // Validate source filter
-  if (sourceFilter && sourceFilter !== "contact" && sourceFilter !== "subscriber") {
-    return err(400, "source must be 'contact' or 'subscriber'");
-  }
-
-  // Read both indexes in parallel
-  const [contactIndex, subscriberIndex] = await Promise.all([
+  // Read ALL indexes in parallel
+  const [quizIndex, contactIndex, subscriberIndex] = await Promise.all([
+    readIndex("quiz-leads", "quiz", "_quiz_leads_index"),
     readIndex("contact-leads", "contact"),
     readIndex("subscribers", "subscriber"),
   ]);
 
-  // Merge and sort by submittedAt descending
-  const merged: IndexEntry[] = [...contactIndex, ...subscriberIndex].sort(
-    (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
-  );
+  // Counts per source (before filtering)
+  const counts = {
+    quiz: quizIndex.length,
+    contact: contactIndex.length,
+    subscriber: subscriberIndex.length,
+    total: quizIndex.length + contactIndex.length + subscriberIndex.length,
+  };
 
-  // Filter by source
-  const filtered = sourceFilter ? merged.filter((e) => e.source === sourceFilter) : merged;
+  // Merge all leads
+  let merged: IndexEntry[] = [...quizIndex, ...contactIndex, ...subscriberIndex];
 
-  const total = filtered.length;
+  // Filter by source if requested
+  if (sourceFilter) {
+    merged = merged.filter((e) => e.source === sourceFilter);
+  }
 
-  // Paginate index entries
-  const page = filtered.slice(offset, offset + limit);
+  // Sort by submittedAt descending (NaN-safe)
+  const safeTs = (s: string): number => {
+    const ms = new Date(s).getTime();
+    return isNaN(ms) ? 0 : ms;
+  };
+  merged.sort((a, b) => safeTs(b.submittedAt) - safeTs(a.submittedAt));
+
+  const total = merged.length;
+  const page = merged.slice(offset, offset + limit);
 
   // Fetch full records for the current page
   const fullLeads = await Promise.all(
     page.map(async (entry) => {
-      const storeName = entry.source === "subscriber" ? "subscribers" : "contact-leads";
+      const storeName = storeNameForSource(entry.source);
       const full = await fetchFullLead(storeName, entry.id);
       if (!full) {
-        // Fall back to index data if full record is unavailable
-        return entry as FullLead;
+        return { ...entry, source: entry.source } as FullLead;
       }
-      // Truncate message to 200 chars in API response
+      // Ensure source is set
+      full.source = full.source || entry.source;
+      // Truncate message
       if (typeof full.message === "string" && full.message.length > 200) {
-        full.message = full.message.slice(0, 200) + "…";
+        full.message = full.message.slice(0, 200) + "\u2026";
+      }
+      // Truncate aiAnalysis.content for quiz leads
+      const ai = full.aiAnalysis;
+      if (
+        ai !== null &&
+        typeof ai === "object" &&
+        !Array.isArray(ai) &&
+        typeof (ai as Record<string, unknown>).content === "string"
+      ) {
+        const aiRecord = ai as Record<string, unknown>;
+        const content = aiRecord.content as string;
+        if (content.length > 800) {
+          full.aiAnalysis = { ...aiRecord, content: content.slice(0, 800) + "\u2026" };
+        }
       }
       return full;
     })
@@ -307,6 +280,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     headers: CORS_HEADERS,
     body: JSON.stringify({
       leads: fullLeads,
+      counts,
       total,
       offset,
       limit,
