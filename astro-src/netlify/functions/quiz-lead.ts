@@ -392,7 +392,7 @@ async function sendResendEmail(
 
 const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
   // Timeout budget (10s Netlify limit):
-  // AI call: 0-6s | Blob storage: ~0.5s | 2x Resend: ~1s | Overhead: ~0.5s
+  // AI call: 0-4s | Blob storage: ~0.5s | 2x Resend (parallel): ~1s | Overhead: ~1.5s
 
   // Build CORS headers — uses SITE_URL if set, falls back to hardcoded production domain
   const corsHeaders = buildCorsHeaders();
@@ -542,8 +542,8 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     console.warn('[quiz-lead] RESEND_API_KEY not set, skipping all emails');
   }
 
-  // User result email — non-fatal: lead is already persisted, so a send failure
-  // must not prevent the client from receiving its quiz results.
+  // Emails — non-fatal, run in parallel to save time within 10s Netlify limit.
+  // Lead is already persisted, so email failure must not block the response.
   let emailSent = false;
   if (canSendEmail) {
     const userTemplate = getUserResultEmail({
@@ -555,22 +555,6 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
       aiAnalysis,
     });
 
-    try {
-      await sendResendEmail(
-        fields.email,
-        userTemplate.subject,
-        userTemplate.html,
-        userTemplate.text
-      );
-      emailSent = true;
-    } catch (err) {
-      console.error('[quiz-lead] User email failed:', (err as Error).message);
-      emailSent = false;
-    }
-  }
-
-  // Team notification email — non-fatal: log but still return success
-  if (canSendEmail) {
     const teamTemplate = getTeamNotificationEmail({
       name: fields.name,
       email: fields.email,
@@ -590,16 +574,18 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
       .map(e => e.trim())
       .filter(e => e.length > 0);
 
-    try {
-      await sendResendEmail(
-        teamEmails,
-        teamTemplate.subject,
-        teamTemplate.html,
-        teamTemplate.text
-      );
-    } catch (e) {
-      console.error("[quiz-lead] team notification email failed:", (e as Error).message);
-      // Non-fatal — lead is stored and user email result is already determined
+    // Fire both emails in parallel — saves ~1s vs sequential
+    const [userResult, teamResult] = await Promise.allSettled([
+      sendResendEmail(fields.email, userTemplate.subject, userTemplate.html, userTemplate.text),
+      sendResendEmail(teamEmails, teamTemplate.subject, teamTemplate.html, teamTemplate.text),
+    ]);
+
+    emailSent = userResult.status === 'fulfilled';
+    if (userResult.status === 'rejected') {
+      console.error('[quiz-lead] User email failed:', userResult.reason?.message ?? userResult.reason);
+    }
+    if (teamResult.status === 'rejected') {
+      console.error('[quiz-lead] Team email failed:', teamResult.reason?.message ?? teamResult.reason);
     }
   }
 

@@ -14,7 +14,7 @@ import type { AiAnalysisInput, AiAnalysisResult } from "./ai-types";
 
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 const OPENROUTER_MODEL = "google/gemini-2.0-flash-001";
-const OPENROUTER_TIMEOUT_MS = 6000;
+const OPENROUTER_TIMEOUT_MS = 4000;
 const OPENROUTER_MAX_TOKENS = 400;
 const OPENROUTER_TEMPERATURE = 0.4;
 const OPENROUTER_DAILY_CAP = 200;
