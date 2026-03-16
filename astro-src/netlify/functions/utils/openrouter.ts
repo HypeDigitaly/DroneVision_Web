@@ -13,10 +13,14 @@ import type { AiAnalysisInput, AiAnalysisResult } from "./ai-types";
 // ---------------------------------------------------------------------------
 
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const OPENROUTER_MODEL = "google/gemini-2.0-flash-001";
+const OPENROUTER_MODELS = [
+  "google/gemini-3-flash-preview",   // Primary — fast, cost-effective
+  "google/gemini-3-pro-preview",     // Fallback 1
+  "anthropic/claude-sonnet-4.5",     // Fallback 2
+];
 const OPENROUTER_TIMEOUT_MS = 4000;
 const OPENROUTER_MAX_TOKENS = 400;
-const OPENROUTER_TEMPERATURE = 0.4;
+const OPENROUTER_TEMPERATURE = 0.7;
 const OPENROUTER_DAILY_CAP = 200;
 const MAX_RESPONSE_BYTES = 8192;
 
@@ -30,10 +34,10 @@ interface OpenRouterMessage {
 }
 
 interface OpenRouterRequestBody {
-  model: string;
+  models: string[];
   messages: OpenRouterMessage[];
   stream: false;
-  max_completion_tokens: number;
+  max_tokens: number;
   temperature: number;
 }
 
@@ -47,6 +51,7 @@ interface OpenRouterUsage {
 }
 
 interface OpenRouterResponse {
+  model?: string;
   choices: OpenRouterChoice[];
   usage: OpenRouterUsage;
 }
@@ -218,13 +223,13 @@ export async function generateAiAnalysis(
     const timeout = setTimeout(() => controller.abort(), OPENROUTER_TIMEOUT_MS);
 
     const requestBody: OpenRouterRequestBody = {
-      model: OPENROUTER_MODEL,
+      models: OPENROUTER_MODELS,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
       stream: false,
-      max_completion_tokens: OPENROUTER_MAX_TOKENS,
+      max_tokens: OPENROUTER_MAX_TOKENS,
       temperature: OPENROUTER_TEMPERATURE,
     };
 
@@ -285,6 +290,7 @@ export async function generateAiAnalysis(
     const content = parsed.choices[0].message.content;
     const finishReason = parsed.choices[0].finish_reason;
     const tokensUsed = parsed.usage.completion_tokens;
+    const usedModel = parsed.model ?? OPENROUTER_MODELS[0];
 
     // 6d. finish_reason must be 'stop' (reject 'length' = truncated)
     if (finishReason !== "stop") {
@@ -356,7 +362,7 @@ export async function generateAiAnalysis(
       JSON.stringify({
         source: "openrouter",
         status: "success",
-        model: OPENROUTER_MODEL,
+        model: usedModel,
         tokensUsed,
         durationMs,
       })
@@ -368,7 +374,7 @@ export async function generateAiAnalysis(
     return {
       status: "success",
       content,
-      model: OPENROUTER_MODEL,
+      model: usedModel,
       tokensUsed,
       generatedAt: new Date().toISOString(),
     };
