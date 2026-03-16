@@ -26,12 +26,11 @@ import type { AiAnalysisResult } from './utils/ai-types';
 // =============================================================================
 
 // ---------------------------------------------------------------------------
-// CORS — SITE_URL is mandatory; no wildcard fallback.
+// CORS — SITE_URL with production domain fallback. Never uses wildcard.
 // ---------------------------------------------------------------------------
 
-function buildCorsHeaders(): Record<string, string> | null {
-  const origin = process.env.SITE_URL;
-  if (!origin) return null;
+function buildCorsHeaders(): Record<string, string> {
+  const origin = process.env.SITE_URL ?? 'https://fotovoltaika.drone-vision.cz';
   return {
     "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
@@ -383,7 +382,7 @@ async function sendResendEmail(
   });
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Resend error ${res.status}: ${body}`);
+    throw new Error(`Resend error ${res.status}: ${body.slice(0, 200)}`);
   }
 }
 
@@ -395,19 +394,18 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
   // Timeout budget (10s Netlify limit):
   // AI call: 0-6s | Blob storage: ~0.5s | 2x Resend: ~1s | Overhead: ~0.5s
 
-  // Build CORS headers — fail fast if SITE_URL is not configured
+  // Build CORS headers — uses SITE_URL if set, falls back to hardcoded production domain
   const corsHeaders = buildCorsHeaders();
-  if (!corsHeaders) {
+
+  if (!process.env.SITE_URL) {
+    console.error("[quiz-lead] Missing required env: SITE_URL");
     return {
       statusCode: 500,
-      headers: {
-        "Content-Type": "application/json",
-        "X-Content-Type-Options": "nosniff",
-      },
+      headers: corsHeaders,
       body: JSON.stringify({
         status: "error",
         code: "INTERNAL_ERROR",
-        message: "Konfigurace serveru je neúplná (SITE_URL).",
+        message: "Konfigurace serveru je neúplná.",
       }),
     };
   }
@@ -538,66 +536,71 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     );
   }
 
-  // User result email — fatal: this is the core value proposition
-  const userTemplate = getUserResultEmail({
-    name: fields.name,
-    capacityKw: fields.capacityKw,
-    panelYear: fields.panelYear,
-    annualLossKc,
-    pricingTier,
-    aiAnalysis,
-  });
+  // Email gate — skip all email sends when RESEND_API_KEY is absent
+  const canSendEmail = !!process.env.RESEND_API_KEY;
+  if (!canSendEmail) {
+    console.warn('[quiz-lead] RESEND_API_KEY not set, skipping all emails');
+  }
 
-  try {
-    await sendResendEmail(
-      fields.email,
-      userTemplate.subject,
-      userTemplate.html,
-      userTemplate.text
-    );
-  } catch (e) {
-    console.error("[quiz-lead] user result email failed:", e);
-    return response(
-      500,
-      {
-        status: "error",
-        code: "INTERNAL_ERROR",
-        message: "Odeslání výsledků na váš e-mail selhalo. Zkuste to znovu.",
-      },
-      corsHeaders
-    );
+  // User result email — non-fatal: lead is already persisted, so a send failure
+  // must not prevent the client from receiving its quiz results.
+  let emailSent = false;
+  if (canSendEmail) {
+    const userTemplate = getUserResultEmail({
+      name: fields.name,
+      capacityKw: fields.capacityKw,
+      panelYear: fields.panelYear,
+      annualLossKc,
+      pricingTier,
+      aiAnalysis,
+    });
+
+    try {
+      await sendResendEmail(
+        fields.email,
+        userTemplate.subject,
+        userTemplate.html,
+        userTemplate.text
+      );
+      emailSent = true;
+    } catch (err) {
+      console.error('[quiz-lead] User email failed:', (err as Error).message);
+      emailSent = false;
+    }
   }
 
   // Team notification email — non-fatal: log but still return success
-  const teamTemplate = getTeamNotificationEmail({
-    name: fields.name,
-    email: fields.email,
-    phone: fields.phone,
-    capacityKw: fields.capacityKw,
-    panelYear: fields.panelYear,
-    planExpansion: fields.planExpansion,
-    annualLossKc,
-    pricingTier,
-    submittedAt: now,
-    isUpdate,
-    aiAnalysis,
-  });
+  if (canSendEmail) {
+    const teamTemplate = getTeamNotificationEmail({
+      name: fields.name,
+      email: fields.email,
+      phone: fields.phone,
+      capacityKw: fields.capacityKw,
+      panelYear: fields.panelYear,
+      planExpansion: fields.planExpansion,
+      annualLossKc,
+      pricingTier,
+      submittedAt: now,
+      isUpdate,
+      aiAnalysis,
+    });
 
-  const teamEmails = (process.env.QUIZ_NOTIFICATION_EMAILS || 'mira@dronesoft.cz,david@dronesoft.cz,pavelcermak@hypedigitaly.ai')
-    .split(',')
-    .map(e => e.trim())
-    .filter(e => e.length > 0);
+    const teamEmails = (process.env.QUIZ_NOTIFICATION_EMAILS || 'mira@dronesoft.cz,david@dronesoft.cz,pavelcermak@hypedigitaly.ai')
+      .split(',')
+      .map(e => e.trim())
+      .filter(e => e.length > 0);
 
-  try {
-    await sendResendEmail(
-      teamEmails,
-      teamTemplate.subject,
-      teamTemplate.html,
-      teamTemplate.text
-    );
-  } catch (e) {
-    console.error("[quiz-lead] team notification email failed:", e);
-    // Non-fatal — lead is stored and user email was sent successfully
+    try {
+      await sendResendEmail(
+        teamEmails,
+        teamTemplate.subject,
+        teamTemplate.html,
+        teamTemplate.text
+      );
+    } catch (e) {
+      console.error("[quiz-lead] team notification email failed:", (e as Error).message);
+      // Non-fatal — lead is stored and user email result is already determined
+    }
   }
 
   // Return 202 for new leads, 200 for updated records
@@ -610,6 +613,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
         annualLossKc,
         pricingTier,
         aiAnalysis: aiAnalysis?.status === 'success' ? { content: aiAnalysis.content } : null,
+        emailSent,
       },
       corsHeaders
     );
@@ -623,6 +627,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
       annualLossKc,
       pricingTier,
       aiAnalysis: aiAnalysis?.status === 'success' ? { content: aiAnalysis.content } : null,
+      emailSent,
     },
     corsHeaders
   );

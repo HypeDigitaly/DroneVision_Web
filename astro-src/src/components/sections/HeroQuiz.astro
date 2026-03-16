@@ -49,6 +49,7 @@ const labels = {
   step6Title:        isEn ? q.step6_title_en           : q.step6_title_cs,
   step6Subtitle:     isEn ? q.step6_subtitle_en        : q.step6_subtitle_cs,
   step6Phone:        q.step6_phone,
+  step6EmailNotice:  isEn ? 'Results could not be sent via email. We will contact you.' : 'Výsledky se nepodařilo odeslat e-mailem. Ozveme se vám.',
   // Navigation
   continue:          isEn ? q.continue_en              : q.continue_cs,
   back:              isEn ? q.back_en                  : q.back_cs,
@@ -382,6 +383,8 @@ const labels = {
           Napište nám e-mail
         </a>
       </div>
+
+      <p id="quiz-s6-email-notice" class="quiz-s6-email-notice" style="display:none;"></p>
 
       <p class="quiz-s6-email-note">{labels.step6Subtitle}</p>
 
@@ -1177,6 +1180,14 @@ const labels = {
     border-color: #D40074;
   }
 
+  .quiz-s6-email-notice {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #a0a0a0;
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
+  }
+
   .quiz-s6-email-note {
     font-size: 12px;
     color: #B2B2B2;
@@ -1223,6 +1234,7 @@ const labels = {
   labelErrorPhone:    labels.errorPhone,
   labelErrorSubmit:   labels.errorSubmit,
   labelStep3Days:     labels.step3Days,
+  labelEmailNotice:   labels.step6EmailNotice,
   reducedMotionHint:  false
 }}>
   // ── Constants ─────────────────────────────────────────────
@@ -1597,6 +1609,17 @@ const labels = {
     } else {
       // No AI content — still show numbers and CTA
       container.classList.add('quiz-s6-results--loaded');
+    }
+
+    // Email delivery notice
+    const emailNotice = document.getElementById('quiz-s6-email-notice');
+    if (emailNotice) {
+      if (data && data.emailSent === false) {
+        emailNotice.textContent = labelEmailNotice;
+        emailNotice.style.display = '';
+      } else {
+        emailNotice.style.display = 'none';
+      }
     }
   }
 
